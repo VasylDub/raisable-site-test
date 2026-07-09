@@ -8,7 +8,7 @@
   /* ---------- Config (front-end) ---------- */
   // Apps Script relay Web App URL. Empty = fall back to Formspree so no lead is lost
   // before the relay is deployed.
-  var FORM_ENDPOINT = '';
+  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzjXFmkOy9jGCG8TuO1PCh7ZhMrq96sFLHlHHGtcJlFB1MTqhiGZIcXWTTzpiPZoXm0aA/exec';
   var FALLBACK_ENDPOINT = 'https://formspree.io/f/mrewovpk';
   var CALENDAR_URL_CALL = 'https://calendar.app.google/sFcnmXxz7LxbKPodA';
   var CALENDAR_URL_STRATEGY_500 = 'https://calendar.app.google/BeoJqfbJL3KaHH7V6';
