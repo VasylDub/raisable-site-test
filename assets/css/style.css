@@ -2746,9 +2746,10 @@ p { text-wrap: pretty; }
 .spotlight-tags .team-exp { display: flex; flex-wrap: wrap; gap: 8px; }
 
 /* whenever the framed panel is active (hover OR tap), cards keep only
-   name + role; the rest lives in the panel */
+   name + role; the rest lives in the panel. Scope to the card's own
+   children so the panel's cloned badges (also inside the grid) still show. */
 .member-panels-on .team-grid-4 .team-card > p:not(.team-role),
-.member-panels-on .team-grid-4 .team-exp { display: none; }
+.member-panels-on .team-grid-4 .team-card > .team-exp { display: none; }
 .member-panels-on .team-grid-4 .team-card { cursor: pointer; }
 
 @media (hover: hover) and (pointer: fine) {

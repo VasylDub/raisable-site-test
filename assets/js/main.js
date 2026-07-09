@@ -323,7 +323,9 @@
         pBio.textContent = bioText;
         pBio.hidden = !pBio.textContent;
         var tags = el.querySelector('.team-exp');
-        pTags.innerHTML = tags ? tags.outerHTML : '';
+        // strip loading=lazy: source badges sit in a display:none block, so lazy
+        // clones never fetch; load them eagerly inside the panel
+        pTags.innerHTML = tags ? tags.outerHTML.replace(/ loading="lazy"/g, '') : '';
         var li = el.querySelector('.li-link');
         pLi.hidden = !li;
         if (li) pLi.href = li.href;
