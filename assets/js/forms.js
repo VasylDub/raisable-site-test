@@ -390,10 +390,15 @@
   }
 
   /* ---------- Success screens ---------- */
+  // Google's calendar.app.google short links send X-Frame-Options: DENY, so they
+  // can't be embedded in an <iframe>. Render a prominent button instead — reliable
+  // everywhere and better on mobile. (To embed inline later, swap CALENDAR_URL_*
+  // for a Google Appointment Scheduling embed URL ending in ?gv=true and restore
+  // the iframe.)
   function calendarBlock(url) {
-    return '<iframe class="success-cal" src="' + url + '" loading="lazy" title="Book a call"></iframe>' +
-      '<div class="success-links"><a href="' + url + '" target="_blank" rel="noopener">' +
-      'Calendar not loading? Open it in a new tab →</a></div>';
+    return '<a class="btn btn-primary success-cal-btn" href="' + url +
+      '" target="_blank" rel="noopener">Pick a time&nbsp;<span class="arr">→</span></a>' +
+      '<p class="success-cal-note">Opens our booking calendar in a new tab.</p>';
   }
 
   function successHTML(type, tags, data) {

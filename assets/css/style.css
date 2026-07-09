@@ -3520,3 +3520,20 @@ p { text-wrap: pretty; }
 
 /* testimonials: logo sits at the end of the attribution row */
 .quote figcaption .li-link { margin: 0 0 0 auto; align-self: center; }
+
+/* ============================================================
+   Round-43: success-screen booking — reliable button instead of
+   a Google short-link iframe (those send X-Frame-Options: DENY).
+   ============================================================ */
+.success-cal-btn {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  margin-top: 6px;
+}
+.success-cal-note {
+  font-size: 0.82rem;
+  color: rgba(248, 249, 246, 0.55);
+  margin-top: 10px;
+}
