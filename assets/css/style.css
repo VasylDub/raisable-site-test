@@ -3444,6 +3444,16 @@ p { text-wrap: pretty; }
   -webkit-mask-position: 0 100%;
   mask-position: 0 100%;
   pointer-events: none;
+  /* ghost row is height-capped so the dissolved zone doesn't leave a void */
+  aspect-ratio: 1 / 0.78;
+  overflow: hidden;
+}
+/* narrower grids: only the FIRST row of hidden mentors ghosts — the rest stay gone */
+@media (max-width: 1000px) {
+  .mentors-grid.is-collapsed .team-card:nth-child(n+11):nth-child(-n+12) { display: none; }
+}
+@media (max-width: 560px) {
+  .mentors-grid.is-collapsed .team-card:nth-child(10) { display: none; }
 }
 .mentors-peek {
   position: absolute;
@@ -3476,3 +3486,37 @@ p { text-wrap: pretty; }
   .mentors-grid .team-card { transition: none; }
   .mentors-peek { animation: none; }
 }
+
+/* ============================================================
+   Round-41: LinkedIn marks — name arrows replaced by a small
+   LinkedIn logo that lives with each person's description
+   (hover panel on desktop, inline on touch, attribution row
+   in testimonials).
+   ============================================================ */
+
+.li-link { display: inline-flex; margin-top: 12px; }
+.li-link img,
+.panel-li img {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  display: block;
+  transition: transform 0.16s var(--ease-out);
+}
+.li-link:hover img,
+.panel-li:hover img { transform: scale(1.12); }
+
+/* desktop cards show name+role only — the logo appears in the panel */
+@media (hover: hover) and (pointer: fine) {
+  .team-grid-4 .team-card > .li-link { display: none; }
+}
+.panel-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+.panel-foot .panel-tags { margin-top: 0; }
+
+/* testimonials: logo sits at the end of the attribution row */
+.quote figcaption .li-link { margin: 0 0 0 auto; align-self: center; }

@@ -283,10 +283,14 @@
         '<svg class="panel-trace" preserveAspectRatio="none" aria-hidden="true">' +
         '<rect class="tr-line" pathLength="100"/><rect class="tr-dot" pathLength="100"/>' +
         '<rect class="tr-shine" pathLength="100"/></svg>' +
-        '<p class="panel-bio"></p><div class="panel-tags"></div>';
+        '<p class="panel-bio"></p><div class="panel-foot">' +
+        '<a class="panel-li" target="_blank" rel="noopener" aria-label="LinkedIn profile" hidden>' +
+        '<img src="assets/img/LG_LINKEDIN_ICON.svg" alt="LinkedIn"></a>' +
+        '<div class="panel-tags"></div></div>';
       grid.appendChild(panel);
       var pBio = panel.querySelector('.panel-bio');
       var pTags = panel.querySelector('.panel-tags');
+      var pLi = panel.querySelector('.panel-li');
       var hideTimer = null;
       var current = null;
       var PAD = 14;
@@ -311,6 +315,9 @@
         pBio.hidden = !pBio.textContent;
         var tags = el.querySelector('.team-exp');
         pTags.innerHTML = tags ? tags.outerHTML : '';
+        var li = el.querySelector('.li-link');
+        pLi.hidden = !li;
+        if (li) pLi.href = li.href;
         var cRect = grid.getBoundingClientRect();
         var r = el.getBoundingClientRect();
         panel.style.top = (r.top - cRect.top - PAD) + 'px';
