@@ -15,7 +15,21 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=44">
+  <!-- Google Analytics (GA4) — paste your Measurement ID below to enable -->
+  <script>
+    window.GA_MEASUREMENT_ID = ''; /* e.g. 'G-ABCD1234XY' */
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { dataLayer.push(arguments); };
+    if (window.GA_MEASUREMENT_ID) {
+      var _ga = document.createElement('script');
+      _ga.async = true;
+      _ga.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
+      document.head.appendChild(_ga);
+      gtag('js', new Date());
+      gtag('config', window.GA_MEASUREMENT_ID);
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/style.css?v=45">
   <noscript><style>
     .load { animation: none; opacity: 1; transform: none; }
     .reveal { opacity: 1; transform: none; visibility: visible; transition: none; }
@@ -1173,7 +1187,7 @@
     </div>
   </dialog>
 
-  <script src="assets/js/main.js?v=44" defer></script>
-  <script src="assets/js/forms.js?v=44" defer></script>
+  <script src="assets/js/main.js?v=45" defer></script>
+  <script src="assets/js/forms.js?v=45" defer></script>
 </body>
 </html>

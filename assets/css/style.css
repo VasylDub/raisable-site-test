@@ -2745,11 +2745,13 @@ p { text-wrap: pretty; }
 .spotlight-tags { margin-top: 16px; }
 .spotlight-tags .team-exp { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* whenever the framed panel is active (hover OR tap), cards keep only
+   name + role; the rest lives in the panel */
+.member-panels-on .team-grid-4 .team-card > p:not(.team-role),
+.member-panels-on .team-grid-4 .team-exp { display: none; }
+.member-panels-on .team-grid-4 .team-card { cursor: pointer; }
+
 @media (hover: hover) and (pointer: fine) {
-  /* cards keep only name + role; everything else lives in the spotlight */
-  .team-grid-4 .team-card > p:not(.team-role),
-  .team-grid-4 .team-exp { display: none; }
-  .team-grid-4 .team-card { cursor: pointer; }
   .team-grid-4 .team-card:hover .team-photo { filter: none; }
 
   /* ambassadors react to the pointer */
@@ -3506,10 +3508,8 @@ p { text-wrap: pretty; }
 .li-link:hover img,
 .panel-li:hover img { transform: scale(1.12); }
 
-/* desktop cards show name+role only — the logo appears in the panel */
-@media (hover: hover) and (pointer: fine) {
-  .team-grid-4 .team-card > .li-link { display: none; }
-}
+/* cards show name+role only — the LinkedIn logo appears in the panel (hover or tap) */
+.member-panels-on .team-grid-4 .team-card > .li-link { display: none; }
 .panel-foot {
   display: flex;
   align-items: center;

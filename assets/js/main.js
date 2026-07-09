@@ -13,7 +13,11 @@
 
   function pushEvent(payload) {
     if (window.dataLayer) { window.dataLayer.push(payload); }
-    else if (window.console && console.debug) { console.debug('[analytics]', payload); }
+    if (window.gtag) {
+      var params = {};
+      Object.keys(payload).forEach(function (k) { if (k !== 'event') params[k] = payload[k]; });
+      window.gtag('event', payload.event || 'event', params);
+    } else if (window.console && console.debug) { console.debug('[analytics]', payload); }
   }
 
   /* ---------- Nav: solid on scroll + mobile menu ---------- */
@@ -270,11 +274,16 @@
     });
   }
 
-  /* ---------- Member panel: hover/focus a marked card -> a framed card
-     encloses photo+name+role with bio+badges below, teal border trace +
-     shimmer on entry (pointer devices). One panel per grid. ---------- */
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    document.querySelectorAll('.team-grid-4, .amb-cards').forEach(function (grid) {
+  /* ---------- Member panel: framed card (photo+name+role, bio+badges below,
+     teal border trace + shimmer). Hover on pointer devices; tap-to-toggle
+     with tap-outside-to-close on touch. One panel per grid. ---------- */
+  (function () {
+    var grids = document.querySelectorAll('.team-grid-4, .amb-cards');
+    if (!grids.length) return;
+    var hasHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    document.documentElement.classList.add('member-panels-on');
+    var controllers = [];
+    grids.forEach(function (grid) {
       var members = grid.querySelectorAll('[data-member-panel]');
       if (!members.length) return;
       var panel = document.createElement('div');
@@ -309,7 +318,7 @@
           var role = el.querySelector('.amb-role');
           var loc = el.querySelector('.amb-loc');
           bioText = [role && role.textContent.trim(), loc && loc.textContent.trim()]
-            .filter(Boolean).join(' \u00b7 ');
+            .filter(Boolean).join(' · ');
         }
         pBio.textContent = bioText;
         pBio.hidden = !pBio.textContent;
@@ -334,24 +343,47 @@
         });
         panel.classList.add('is-on');
       }
+      function hideNow() {
+        clearTimeout(hideTimer);
+        panel.classList.remove('is-on');
+        if (current) { current.classList.remove('is-spot'); current = null; }
+      }
       function scheduleHide() {
         clearTimeout(hideTimer);
-        hideTimer = setTimeout(function () {
-          panel.classList.remove('is-on');
-          if (current) { current.classList.remove('is-spot'); current = null; }
-        }, 150);
+        hideTimer = setTimeout(hideNow, 150);
       }
 
-      members.forEach(function (el) {
-        el.addEventListener('mouseenter', function () { showPanel(el); });
-        el.addEventListener('mouseleave', scheduleHide);
-        el.addEventListener('focusin', function () { showPanel(el); });
-        el.addEventListener('focusout', scheduleHide);
-      });
-      panel.addEventListener('mouseenter', function () { clearTimeout(hideTimer); });
-      panel.addEventListener('mouseleave', scheduleHide);
+      if (hasHover) {
+        members.forEach(function (el) {
+          el.addEventListener('mouseenter', function () { showPanel(el); });
+          el.addEventListener('mouseleave', scheduleHide);
+          el.addEventListener('focusin', function () { showPanel(el); });
+          el.addEventListener('focusout', scheduleHide);
+        });
+        panel.addEventListener('mouseenter', function () { clearTimeout(hideTimer); });
+        panel.addEventListener('mouseleave', scheduleHide);
+      } else {
+        members.forEach(function (el) {
+          el.setAttribute('tabindex', '0');
+          el.addEventListener('click', function () {
+            if (current === el) hideNow(); else showPanel(el);
+          });
+        });
+        controllers.push({
+          panel: panel,
+          holds: function (t) { return panel.contains(t) || (current && current.contains(t)); },
+          hide: hideNow
+        });
+      }
     });
-  }
+    if (!hasHover && controllers.length) {
+      document.addEventListener('click', function (e) {
+        controllers.forEach(function (c) {
+          if (c.panel.classList.contains('is-on') && !c.holds(e.target)) c.hide();
+        });
+      });
+    }
+  })();
 
   /* ---------- Footer year ---------- */
   var year = document.querySelector('[data-year]');

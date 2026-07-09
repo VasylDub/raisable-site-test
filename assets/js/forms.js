@@ -24,6 +24,7 @@
   function track(event, data) {
     var payload = Object.assign({ event: event }, data || {});
     if (window.dataLayer) { window.dataLayer.push(payload); }
+    if (window.gtag) { window.gtag('event', event, data || {}); }
     else if (window.console && console.debug) { console.debug('[analytics]', payload); }
   }
 
