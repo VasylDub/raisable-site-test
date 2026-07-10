@@ -1035,6 +1035,9 @@ p { text-wrap: pretty; }
   .media-cols { grid-template-columns: 1fr; }
   .team-grid { grid-template-columns: 1fr; }
   .nav-toggle { display: flex; }
+  /* mobile: Apply sits on the right, next to the menu button */
+  .nav-inner { gap: 16px; }
+  .nav-inner .btn-nav { margin-left: auto; }
   .nav-links {
     display: none;
     position: absolute;
@@ -3317,7 +3320,6 @@ p { text-wrap: pretty; }
 
 /* stronger card contrast: the fit card leans in, the other steps back */
 #fit .fit-yes {
-  background: #F2FAF7;
   border-color: rgba(0, 189, 151, 0.5);
 }
 #fit .fit-no { background: var(--white); }
