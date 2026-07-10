@@ -1038,6 +1038,12 @@ p { text-wrap: pretty; }
   /* mobile: Apply sits on the right, next to the menu button */
   .nav-inner { gap: 16px; }
   .nav-inner .btn-nav { margin-left: auto; }
+  /* mobile: every big Apply CTA aligns right, matching the nav */
+  .btn-primary[data-open-apply] {
+    display: flex;
+    width: max-content;
+    margin-left: auto;
+  }
   .nav-links {
     display: none;
     position: absolute;
