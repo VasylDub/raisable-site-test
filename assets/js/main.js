@@ -119,8 +119,6 @@
   var carousel = document.querySelector('[data-carousel]');
   if (carousel) {
     var qTrack = carousel.querySelector('.quotes-track');
-    var prev = carousel.querySelector('[data-prev]');
-    var next = carousel.querySelector('[data-next]');
     var dots = carousel.querySelector('.quotes-dots');
     var total = qTrack.children.length;
     var page = 0;
@@ -130,6 +128,25 @@
     }
     function pages() { return Math.ceil(total / perPage()); }
 
+    function buildDots() {
+      dots.innerHTML = '';
+      for (var i = 0; i < pages(); i++) {
+        (function (idx) {
+          var d = document.createElement('button');
+          d.type = 'button';
+          d.className = 'q-dot';
+          d.setAttribute('aria-label', 'Testimonials page ' + (idx + 1));
+          d.addEventListener('click', function () {
+            page = idx;
+            render();
+            stopAuto();
+            startAuto();
+          });
+          dots.appendChild(d);
+        })(i);
+      }
+    }
+
     function render() {
       var pp = perPage();
       var max = pages() - 1;
@@ -138,7 +155,10 @@
       var gap = 20;
       var offset = page * pp * (card.getBoundingClientRect().width + gap);
       qTrack.style.transform = 'translateX(-' + offset + 'px)';
-      dots.textContent = (page + 1) + ' / ' + (max + 1);
+      if (dots.children.length !== pages()) buildDots();
+      for (var i = 0; i < dots.children.length; i++) {
+        dots.children[i].classList.toggle('is-active', i === page);
+      }
     }
 
     function step(dir) {
@@ -157,8 +177,6 @@
       if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
     }
 
-    prev.addEventListener('click', function () { step(-1); stopAuto(); startAuto(); });
-    next.addEventListener('click', function () { step(1); stopAuto(); startAuto(); });
     carousel.addEventListener('mouseenter', stopAuto);
     carousel.addEventListener('mouseleave', startAuto);
     carousel.addEventListener('focusin', stopAuto);

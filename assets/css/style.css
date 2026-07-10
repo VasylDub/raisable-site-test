@@ -1725,47 +1725,67 @@ p { text-wrap: pretty; }
   max-width: var(--w-content);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
+/* event card: picture shown in full on the left, title on the right */
 .event-card {
   position: relative;
-  display: block;
-  aspect-ratio: 1 / 0.92;
+  display: grid;
+  grid-template-columns: minmax(160px, 300px) 1fr;
+  align-items: center;
+  gap: clamp(18px, 3vw, 34px);
+  border: 1px solid var(--line);
   border-radius: 14px;
+  background: var(--paper);
   overflow: hidden;
-  background: var(--night);
+  padding-right: clamp(52px, 6vw, 72px); /* room for the arrow */
+  transition: border-color 0.2s ease, box-shadow 0.25s ease, transform 0.25s var(--ease-out);
 }
-.event-card img {
-  position: absolute;
-  inset: 0;
+.event-card:hover {
+  border-color: rgba(0, 189, 151, 0.55);
+  box-shadow: 0 14px 32px rgba(10, 38, 33, 0.1);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.event-media { display: block; }
+.event-media img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto; /* the full cover, uncropped */
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
 }
-.event-scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(10, 38, 33, 0.92) 0%, rgba(10, 38, 33, 0.2) 50%, rgba(10, 38, 33, 0.08) 100%);
-}
+.event-card:hover .event-media img { transform: scale(1.03); }
 .event-idx {
-  position: absolute;
-  top: 14px;
-  left: 16px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   letter-spacing: 0.1em;
-  color: rgba(248, 249, 246, 0.85);
-  background: rgba(10, 38, 33, 0.55);
-  backdrop-filter: blur(4px);
+  color: var(--teal-ink);
+  border: 1px solid var(--line);
   border-radius: 999px;
   padding: 4px 10px;
+  width: max-content;
 }
+.event-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 0;
+}
+.event-body strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--ink);
+  font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.event-venue { color: var(--soft); font-size: 0.9rem; }
 .event-arrow {
   position: absolute;
-  top: 12px;
-  right: 14px;
+  top: 50%;
+  right: clamp(14px, 2vw, 22px);
+  transform: translateY(-50%);
   width: 36px;
   height: 36px;
   display: grid;
@@ -1775,34 +1795,15 @@ p { text-wrap: pretty; }
   border-radius: 50%;
   font-size: 1rem;
   opacity: 0;
-  transform: translateY(6px);
   transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
 }
-.event-card:focus-visible .event-arrow { opacity: 1; transform: none; }
-.event-body {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-.event-body strong {
-  font-family: var(--font-display);
-  font-weight: 500;
-  color: #FFFFFF;
-  font-size: 1.02rem;
-  line-height: 1.3;
-  text-wrap: balance;
-}
-.event-body span { color: rgba(248, 249, 246, 0.72); font-size: 0.82rem; }
+.event-card:hover .event-arrow,
+.event-card:focus-visible .event-arrow { opacity: 1; }
 
 @media (max-width: 900px) {
   .media-bento { grid-template-columns: 1fr; grid-template-rows: none; }
   .feat-main { grid-row: auto; aspect-ratio: 16 / 9; }
   .feat-side { aspect-ratio: 16 / 9; }
-  .events-trio { grid-template-columns: 1fr; }
-  .event-card { aspect-ratio: 16 / 10; }
   .why-after { padding-left: 16px; }
   .wv-stop text { font-size: 22px; }
   .wv-label { font-size: 19px; }
@@ -3695,4 +3696,62 @@ p { text-wrap: pretty; }
   text-transform: uppercase;
   color: var(--soft);
   margin: 0 0 10px;
+}
+
+/* ============================================================
+   Round-55: legal pages (ported from accelerator site) ·
+   testimonial slider dots · event cards rebuilt (image left,
+   title right) · new Rooms photos shipped alongside.
+   ============================================================ */
+
+/* ---------- Legal pages ---------- */
+.legal-main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 130px var(--pad-x) 90px;
+}
+.legal-main h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin-bottom: 0.3em; }
+.legal-updated {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--soft);
+  margin-bottom: 2.4rem;
+}
+.legal-main h2 { font-size: 1.25rem; margin: 2.4rem 0 0.6rem; }
+.legal-main p, .legal-main li { color: var(--soft); font-size: 0.98rem; }
+.legal-main p + p { margin-top: 0.8rem; }
+.legal-main ul { padding-left: 22px; margin: 0.6rem 0; }
+.legal-main li { margin: 0.35rem 0; }
+
+/* ---------- Testimonials: dots instead of arrows + counter ---------- */
+.quotes-nav { display: flex; justify-content: center; margin-top: 20px; }
+.quotes-btn { display: none; }
+.quotes-dots { display: flex; gap: 6px; }
+.q-dot {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.q-dot::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--line);
+  transition: width 0.25s var(--ease-out), background-color 0.25s ease;
+}
+.q-dot:hover::before { background: var(--soft); }
+.q-dot.is-active::before { width: 22px; background: var(--teal); }
+
+@media (max-width: 560px) {
+  .event-card { grid-template-columns: 124px 1fr; gap: 14px; padding-right: 44px; }
+  .event-body { padding: 12px 0; gap: 7px; }
+  .event-body strong { font-size: 0.98rem; }
+  .event-venue { font-size: 0.8rem; }
+  .event-arrow { width: 30px; height: 30px; }
 }

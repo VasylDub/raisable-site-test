@@ -161,7 +161,7 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="assets/css/style.css?v=58">
+  <link rel="stylesheet" href="assets/css/style.css?v=59">
   <noscript><style>
     .load { animation: none; opacity: 1; transform: none; }
     .reveal { opacity: 1; transform: none; visibility: visible; transition: none; }
@@ -490,9 +490,7 @@
           </figure>
         </div>
         <div class="quotes-nav">
-          <button type="button" class="quotes-btn" data-prev aria-label="Previous testimonials">←</button>
-          <span class="quotes-dots" aria-hidden="true"></span>
-          <button type="button" class="quotes-btn" data-next aria-label="Next testimonials">→</button>
+          <div class="quotes-dots" role="group" aria-label="Testimonial pages"></div>
         </div>
       </div>
     </section>
@@ -521,10 +519,13 @@
         <div class="rooms-track">
           <figure><img src="assets/img/PHOTO_STANFORD_GROUP.jpg" alt="Raisable cohort at Stanford University" loading="lazy"><figcaption>Stanford</figcaption></figure>
           <figure><img src="assets/img/BOOT_DINNER.jpg" alt="Private founder dinner" loading="lazy"><figcaption>Founder dinner · Palo Alto</figcaption></figure>
+          <figure><img src="assets/img/ROOMS_SURF.jpg" alt="Surfing with founders and VCs" loading="lazy"><figcaption>Surfing with founders &amp; VCs</figcaption></figure>
           <figure><img src="assets/img/PHOTO_PLUGPLAY.jpg" alt="Session at Plug and Play" loading="lazy"><figcaption>Plug and Play</figcaption></figure>
           <figure><img src="assets/img/BOOT_BERKELEY.jpg" alt="Cohort visit to UC Berkeley" loading="lazy"><figcaption>UC Berkeley</figcaption></figure>
+          <figure><img src="assets/img/ROOMS_GOOGLE.jpg" alt="Meeting with leaders at Google" loading="lazy"><figcaption>Google</figcaption></figure>
           <figure><img src="assets/img/BOOT_1.jpg" alt="Bootcamp session" loading="lazy"><figcaption>SV Bootcamp</figcaption></figure>
           <figure><img src="assets/img/PHOTO_STANFORD.jpg" alt="At Stanford campus" loading="lazy"><figcaption>Stanford</figcaption></figure>
+          <figure><img src="assets/img/ROOMS_LINKEDIN.jpg" alt="Visit to LinkedIn headquarters" loading="lazy"><figcaption>LinkedIn HQ</figcaption></figure>
           <figure><img src="assets/img/BOOT_4.jpg" alt="Investor session" loading="lazy"><figcaption>Investor session</figcaption></figure>
           <figure><img src="assets/img/BOOT_6.jpg" alt="Founder gathering in San Francisco" loading="lazy"><figcaption>San Francisco</figcaption></figure>
           <figure><img src="assets/img/BOOT_9.jpg" alt="Bootcamp group photo" loading="lazy"><figcaption>SV Bootcamp</figcaption></figure>
@@ -621,34 +622,31 @@
       </div>
       <div class="events-trio reveal">
         <a class="event-card" href="https://luma.com/o5qz4p3x" target="_blank" rel="noopener">
-          <span class="event-idx">01</span>
-          <img src="assets/img/LUMA_EV_1.jpg" alt="" loading="lazy">
-          <span class="event-scrim" aria-hidden="true"></span>
-          <span class="event-arrow" aria-hidden="true">↗</span>
+          <span class="event-media"><img src="assets/img/LUMA_EV_1.jpg" alt="" loading="lazy"></span>
           <span class="event-body">
+            <span class="event-idx">01</span>
             <strong>Invite-only VC × Founders Pitch Night</strong>
-            <span>Silicon Valley Bank · San Francisco</span>
+            <span class="event-venue">Silicon Valley Bank · San Francisco</span>
           </span>
+          <span class="event-arrow" aria-hidden="true">↗</span>
         </a>
         <a class="event-card" href="https://luma.com/5a5phz4k" target="_blank" rel="noopener">
-          <span class="event-idx">02</span>
-          <img src="assets/img/LUMA_EV_2.jpg" alt="" loading="lazy">
-          <span class="event-scrim" aria-hidden="true"></span>
-          <span class="event-arrow" aria-hidden="true">↗</span>
+          <span class="event-media"><img src="assets/img/LUMA_EV_2.jpg" alt="" loading="lazy"></span>
           <span class="event-body">
+            <span class="event-idx">02</span>
             <strong>Lunch with an Investor</strong>
-            <span>Small-table conversation with an active check-writer</span>
+            <span class="event-venue">Small-table conversation with an active check-writer</span>
           </span>
+          <span class="event-arrow" aria-hidden="true">↗</span>
         </a>
         <a class="event-card" href="https://luma.com/0su2qz2h" target="_blank" rel="noopener">
-          <span class="event-idx">03</span>
-          <img src="assets/img/LUMA_EV_3.jpg" alt="" loading="lazy">
-          <span class="event-scrim" aria-hidden="true"></span>
-          <span class="event-arrow" aria-hidden="true">↗</span>
+          <span class="event-media"><img src="assets/img/LUMA_EV_3.jpg" alt="" loading="lazy"></span>
           <span class="event-body">
+            <span class="event-idx">03</span>
             <strong>SF Founder Playbook: Your First Investor Meeting</strong>
-            <span>Workshop for founders new to the Valley</span>
+            <span class="event-venue">Workshop for founders new to the Valley</span>
           </span>
+          <span class="event-arrow" aria-hidden="true">↗</span>
         </a>
       </div>
     </section>
@@ -1019,6 +1017,8 @@
         <a href="https://www.linkedin.com/company/raisable-global/" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://luma.com/raisable" target="_blank" rel="noopener">Luma</a>
         <a href="mailto:og@raisable.vc">Contact</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Use</a>
       </div>
       <p class="footer-fine">© <span data-year>2026</span> Raisable · Silicon Valley ·
         <a href="https://accelerator.raisable.vc" target="_blank" rel="noopener">For corporates &amp; VCs → accelerator.raisable.vc</a></p>
@@ -1365,7 +1365,7 @@
     </div>
   </dialog>
 
-  <script src="assets/js/main.js?v=55" defer></script>
-  <script src="assets/js/forms.js?v=55" defer></script>
+  <script src="assets/js/main.js?v=59" defer></script>
+  <script src="assets/js/forms.js?v=59" defer></script>
 </body>
 </html>
