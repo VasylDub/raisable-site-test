@@ -1038,11 +1038,22 @@ p { text-wrap: pretty; }
   /* mobile: Apply sits on the right, next to the menu button */
   .nav-inner { gap: 16px; }
   .nav-inner .btn-nav { margin-left: auto; }
-  /* mobile: every big Apply CTA aligns right, matching the nav */
+  /* mobile: primary CTAs span the content column — they reach the right
+     edge (thumb zone) without floating detached from the text above */
   .btn-primary[data-open-apply] {
     display: flex;
-    width: max-content;
-    margin-left: auto;
+    width: 100%;
+    justify-content: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  /* comfortable thumb targets (44px guideline) */
+  .btn-nav { padding-top: 11px; padding-bottom: 11px; }
+  .program-cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 0.5rem;
   }
   .nav-links {
     display: none;
@@ -1068,7 +1079,7 @@ p { text-wrap: pretty; }
 
 @media (max-width: 560px) {
   .nav-logo img { height: 15px; }
-  .btn-nav { padding: 8px 12px; font-size: 0.78rem; }
+  .btn-nav { padding: 11px 14px; font-size: 0.78rem; }
   .logo-wall { grid-template-columns: repeat(2, 1fr); }
   .people { grid-template-columns: 1fr 1fr; gap: 20px 14px; }
   .person span { font-size: 0.74rem; }
