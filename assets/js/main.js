@@ -292,11 +292,13 @@
         '<svg class="panel-trace" preserveAspectRatio="none" aria-hidden="true">' +
         '<rect class="tr-line" pathLength="100"/><rect class="tr-dot" pathLength="100"/>' +
         '<rect class="tr-shine" pathLength="100"/></svg>' +
+        '<div class="panel-head" hidden></div>' +
         '<p class="panel-bio"></p><div class="panel-foot">' +
         '<a class="panel-li" target="_blank" rel="noopener" aria-label="LinkedIn profile" hidden>' +
         '<img src="assets/img/LG_LINKEDIN_ICON.svg" alt="LinkedIn"></a>' +
         '<div class="panel-tags"></div></div>';
       grid.appendChild(panel);
+      var pHead = panel.querySelector('.panel-head');
       var pBio = panel.querySelector('.panel-bio');
       var pTags = panel.querySelector('.panel-tags');
       var pLi = panel.querySelector('.panel-li');
@@ -306,9 +308,10 @@
 
       function showPanel(el) {
         clearTimeout(hideTimer);
+        var isMobile = window.matchMedia('(max-width: 560px)').matches;
         if (current && current !== el) current.classList.remove('is-spot');
         current = el;
-        el.classList.add('is-spot');
+        if (!isMobile) el.classList.add('is-spot');
         var bio = null;
         el.querySelectorAll('p').forEach(function (p) {
           if (!bio && !p.classList.contains('team-role')) bio = p;
@@ -331,14 +334,27 @@
         if (li) pLi.href = li.href;
         var cRect = grid.getBoundingClientRect();
         var r = el.getBoundingClientRect();
-        if (window.matchMedia('(max-width: 560px)').matches) {
-          // phones (2-up): card is too narrow to wrap — show a full-width info
-          // panel just below the tapped card instead
+        if (isMobile) {
+          // phones (2-up): the card is too narrow to wrap, so the panel becomes
+          // the full card — photo + name + role cloned in, bio + badges below,
+          // all in one frame anchored where the tapped card sits
+          var wrap = el.querySelector('.team-photo-wrap');
+          var h3 = el.querySelector('h3');
+          var role = el.querySelector('.team-role');
+          pHead.innerHTML =
+            (wrap ? wrap.outerHTML.replace(/ loading="lazy"/g, '') : '') +
+            (h3 ? '<h3>' + h3.innerHTML + '</h3>' : '') +
+            (role ? '<p class="team-role">' + role.innerHTML + '</p>' : '');
+          pHead.hidden = false;
+          panel.classList.add('is-mobile');
           panel.style.left = '0px';
           panel.style.width = cRect.width + 'px';
-          panel.style.top = (r.top - cRect.top + r.height + 8) + 'px';
+          panel.style.top = (r.top - cRect.top) + 'px';
           panel.style.paddingTop = '';
         } else {
+          pHead.hidden = true;
+          pHead.innerHTML = '';
+          panel.classList.remove('is-mobile');
           panel.style.top = (r.top - cRect.top - PAD) + 'px';
           panel.style.left = (r.left - cRect.left - PAD) + 'px';
           panel.style.width = (r.width + PAD * 2) + 'px';
@@ -353,6 +369,14 @@
           rc.setAttribute('rx', 13);
         });
         panel.classList.add('is-on');
+        if (isMobile) {
+          requestAnimationFrame(function () {
+            var pr = panel.getBoundingClientRect();
+            if (pr.top < 70 || pr.bottom > window.innerHeight) {
+              window.scrollTo({ top: window.scrollY + pr.top - 84, behavior: 'smooth' });
+            }
+          });
+        }
       }
       function hideNow() {
         clearTimeout(hideTimer);

@@ -3650,3 +3650,30 @@ p { text-wrap: pretty; }
   .faq-item[open] .faq-a { animation: none; }
   .faq-mark::before, .faq-mark::after { transition: none; }
 }
+
+/* ============================================================
+   Round-51: mobile connected member card — on phones the panel
+   IS the card: cloned photo + name + role at top, bio + badges
+   below, one frame. Hi-res photo swaps (Vasyl/Jack/Maksymets/
+   Michael) shipped alongside.
+   ============================================================ */
+.member-panel.is-mobile { z-index: 40; }
+.member-panel.is-mobile .panel-head { display: block; margin-bottom: 10px; }
+.member-panel.is-mobile .panel-head .team-photo-wrap { margin-bottom: 12px; }
+.member-panel.is-mobile .panel-head .team-photo {
+  filter: none; /* the open card is in color, like desktop */
+  transform: none;
+}
+.member-panel.is-mobile .panel-head h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  margin: 0 0 2px;
+}
+.member-panel.is-mobile .panel-head .team-role {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--soft);
+  margin: 0 0 10px;
+}
