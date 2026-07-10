@@ -331,10 +331,19 @@
         if (li) pLi.href = li.href;
         var cRect = grid.getBoundingClientRect();
         var r = el.getBoundingClientRect();
-        panel.style.top = (r.top - cRect.top - PAD) + 'px';
-        panel.style.left = (r.left - cRect.left - PAD) + 'px';
-        panel.style.width = (r.width + PAD * 2) + 'px';
-        panel.style.paddingTop = (r.height + PAD + 8) + 'px';
+        if (window.matchMedia('(max-width: 560px)').matches) {
+          // phones (2-up): card is too narrow to wrap — show a full-width info
+          // panel just below the tapped card instead
+          panel.style.left = '0px';
+          panel.style.width = cRect.width + 'px';
+          panel.style.top = (r.top - cRect.top + r.height + 8) + 'px';
+          panel.style.paddingTop = '';
+        } else {
+          panel.style.top = (r.top - cRect.top - PAD) + 'px';
+          panel.style.left = (r.left - cRect.left - PAD) + 'px';
+          panel.style.width = (r.width + PAD * 2) + 'px';
+          panel.style.paddingTop = (r.height + PAD + 8) + 'px';
+        }
         var w = panel.offsetWidth, h = panel.offsetHeight;
         var svg = panel.querySelector('.panel-trace');
         svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
