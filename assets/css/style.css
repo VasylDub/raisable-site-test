@@ -3755,3 +3755,65 @@ p { text-wrap: pretty; }
   .event-venue { font-size: 0.8rem; }
   .event-arrow { width: 30px; height: 30px; }
 }
+
+/* ============================================================
+   Round-56: FAQ collapsed teaser (same dissolve pattern as
+   programs/mentors) · "Show less" buttons replaced with double
+   up-chevrons everywhere · footer Contact removed.
+   ============================================================ */
+
+/* shared expanded-state control: double chevrons pointing up */
+.peek-up {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  padding: 8px 22px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--teal);
+  animation: peek-bob-up 2.2s ease-in-out infinite;
+}
+.peek-up svg { width: 32px; height: 32px; display: block; }
+.peek-up svg + svg { margin-top: -20px; opacity: 0.45; }
+.peek-up:hover { color: #0BD5AC; }
+@keyframes peek-bob-up {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.programs-more, .mentors-more, .faq-more { text-align: center; }
+
+/* FAQ teaser: first questions visible, third dissolves into the page */
+.faq-list { position: relative; }
+.faq-list.is-collapsed { padding-bottom: 40px; }
+.faq-list.is-collapsed .faq-item:nth-of-type(n+4) { display: none; }
+.faq-list.is-collapsed .faq-item:nth-of-type(3) {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.4) 55%, transparent 95%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.4) 55%, transparent 95%);
+  pointer-events: none;
+}
+.faq-peek {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 22px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--teal);
+  animation: peek-bob 2.2s ease-in-out infinite;
+}
+.faq-peek svg { width: 32px; height: 32px; display: block; }
+.faq-peek svg + svg { margin-top: -20px; opacity: 0.45; }
+.faq-peek:hover { color: #0BD5AC; }
+.faq-list:not(.is-collapsed) .faq-peek { display: none; }
+.faq-list.is-collapsed + .faq-more { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .peek-up, .faq-peek { animation: none; }
+}

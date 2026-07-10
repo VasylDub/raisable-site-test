@@ -248,6 +248,23 @@
     }
   }
 
+  /* ---------- FAQ: collapsed teaser + toggle (same pattern as mentors) ---------- */
+  var faqList = document.querySelector('.faq-list');
+  var faqLess = document.querySelector('[data-show-faq]');
+  var faqPeek = document.querySelector('.faq-peek');
+  if (faqList && faqLess) {
+    var setFaqExpanded = function (expanded) {
+      faqList.classList.toggle('is-collapsed', !expanded);
+      faqLess.setAttribute('aria-expanded', String(expanded));
+    };
+    if (faqPeek) faqPeek.addEventListener('click', function () { setFaqExpanded(true); });
+    faqLess.addEventListener('click', function () {
+      setFaqExpanded(false);
+      var sec = document.getElementById('faq');
+      if (sec && sec.getBoundingClientRect().top < 0) sec.scrollIntoView();
+    });
+  }
+
   /* ---------- Why Raisable: proof band + analytics (per TZ) ---------- */
   var proof = document.getElementById('why-proof');
   if (proof) {

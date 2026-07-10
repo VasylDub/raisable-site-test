@@ -161,7 +161,7 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="assets/css/style.css?v=59">
+  <link rel="stylesheet" href="assets/css/style.css?v=60">
   <noscript><style>
     .load { animation: none; opacity: 1; transform: none; }
     .reveal { opacity: 1; transform: none; visibility: visible; transition: none; }
@@ -362,7 +362,7 @@
         </button>
       </div>
       <div class="programs-more reveal">
-        <button class="btn btn-outline btn-outline-light" type="button" data-show-programs aria-expanded="false"><span data-more-label>Show more</span>&nbsp;<span class="arr-v" aria-hidden="true">↓</span></button>
+        <button class="peek-up" type="button" data-show-programs aria-expanded="false" aria-label="Show less"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </section>
 
@@ -947,7 +947,7 @@
         </button>
       </div>
       <div class="mentors-more reveal">
-        <button class="btn btn-outline" type="button" data-show-mentors aria-expanded="false"><span data-more-label>Show more mentors</span>&nbsp;<span class="arr-v" aria-hidden="true">↓</span></button>
+        <button class="peek-up" type="button" data-show-mentors aria-expanded="false" aria-label="Show less"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </section>
 
@@ -962,8 +962,8 @@
           <p class="lede reveal">The short version — what founders ask before they apply.</p>
         </div>
       </div>
-      <div class="faq-list reveal">
-        <details class="faq-item" open>
+      <div class="faq-list reveal is-collapsed">
+        <details class="faq-item">
           <summary><span class="faq-q">What is Raisable?</span><span class="faq-mark" aria-hidden="true"></span></summary>
           <div class="faq-a"><p>Raisable helps global founders break into Silicon Valley. Through an online founder community, in-person bootcamps, invite-only investor sessions, and an application-only acceleration program, founders become fundable and ready for the US market.</p></div>
         </details>
@@ -987,6 +987,13 @@
           <summary><span class="faq-q">Who is behind Raisable?</span><span class="faq-mark" aria-hidden="true"></span></summary>
           <div class="faq-a"><p>Raisable was founded by Vasyl Dub, a Stanford STVP mentor and Network VC venture partner. Programs are led by Sacha Ledan (ex-Stanford GSB, ex-StartX), backed by advisors including Stanford professor Chuck Eesley and a network of 15+ founder-mentors.</p></div>
         </details>
+        <button class="faq-peek" type="button" aria-label="Show all questions">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="faq-more reveal">
+        <button class="peek-up" type="button" data-show-faq aria-expanded="false" aria-label="Show less"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </section>
 
@@ -1016,7 +1023,6 @@
         <a href="https://www.youtube.com/@RaisableFounders" target="_blank" rel="noopener">YouTube</a>
         <a href="https://www.linkedin.com/company/raisable-global/" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://luma.com/raisable" target="_blank" rel="noopener">Luma</a>
-        <a href="mailto:og@raisable.vc">Contact</a>
         <a href="privacy.html">Privacy Policy</a>
         <a href="terms.html">Terms of Use</a>
       </div>
@@ -1365,7 +1371,7 @@
     </div>
   </dialog>
 
-  <script src="assets/js/main.js?v=59" defer></script>
-  <script src="assets/js/forms.js?v=59" defer></script>
+  <script src="assets/js/main.js?v=60" defer></script>
+  <script src="assets/js/forms.js?v=60" defer></script>
 </body>
 </html>
