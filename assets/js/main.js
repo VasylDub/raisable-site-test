@@ -317,36 +317,93 @@
     if (!grids.length) return;
     var hasHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     document.documentElement.classList.add('member-panels-on');
-    // mosaic assembly: the open card builds from small flipping tiles.
-    // Played once per member (repeat hovers get the plain quick fade) and
-    // skipped entirely under reduced motion. Tiles animate transform+opacity
-    // only, are removed right after, so cost is a brief GPU-only burst.
-    var mosaicSeen = typeof WeakSet === 'function' ? new WeakSet() : null;
-    function mosaicReveal(panel) {
-      if (reduceMotion) return;
-      var prev = panel.querySelector('.mosaic');
-      if (prev) prev.remove();
+    // mosaic cube assembly: the card's own content is sliced into small 3D
+    // tiles (clip-path pieces of a live clone) that flip into place on open
+    // and flip away in reverse order on close — on every hover/tap.
+    // transform+opacity only; the stage is torn down right after each run.
+    var EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
+    function clearStage(panel) {
+      var st = panel.querySelector('.mosaic-stage');
+      if (st) st.remove();
+      panel.classList.remove('is-building');
+      if (panel.__mosaicTimer) { clearTimeout(panel.__mosaicTimer); panel.__mosaicTimer = null; }
+      if (panel.__mosaicTimer2) { clearTimeout(panel.__mosaicTimer2); panel.__mosaicTimer2 = null; }
+    }
+    function buildStage(panel) {
       var w = panel.offsetWidth, h = panel.offsetHeight;
-      var cols = Math.max(3, Math.min(8, Math.round(w / 56)));
-      var rows = Math.max(3, Math.min(10, Math.round(h / 56)));
-      while (cols * rows > 56) rows -= 1; // cap the tile count
-      var m = document.createElement('div');
-      m.className = 'mosaic';
-      m.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
-      m.style.gridTemplateRows = 'repeat(' + rows + ', 1fr)';
-      var maxDelay = 0;
+      var cols = Math.max(3, Math.min(6, Math.round(w / 64)));
+      var rows = Math.max(3, Math.min(8, Math.round(h / 64)));
+      while (cols * rows > 30) rows -= 1; // keep the clone count light
+      var stage = document.createElement('div');
+      stage.className = 'mosaic-stage';
+      var tpl = document.createElement('div');
+      tpl.className = 'm-clone';
+      Array.prototype.forEach.call(panel.children, function (ch) {
+        if (ch.classList.contains('panel-trace') || ch.classList.contains('mosaic-stage')) return;
+        tpl.appendChild(ch.cloneNode(true));
+      });
+      var tiles = [];
+      var max = 0;
       for (var r = 0; r < rows; r++) {
         for (var c = 0; c < cols; c++) {
-          var t = document.createElement('i');
-          // diagonal wave + a touch of jitter so it reads organic, not scanline
-          var d = (r + c) * 36 + ((r * 7 + c * 13) % 3) * 14;
-          if (d > maxDelay) maxDelay = d;
-          t.style.animationDelay = d + 'ms';
-          m.appendChild(t);
+          var sl = document.createElement('div');
+          sl.className = 'm-slice';
+          var top = (r / rows) * 100, left = (c / cols) * 100;
+          var bottom = 100 - ((r + 1) / rows) * 100;
+          var right = 100 - ((c + 1) / cols) * 100;
+          // 0.3px bleed hides subpixel seams between slices
+          sl.style.clipPath = 'inset(calc(' + top + '% - 0.3px) calc(' + right + '% - 0.3px) calc(' + bottom + '% - 0.3px) calc(' + left + '% - 0.3px))';
+          sl.style.transformOrigin = (((c + 0.5) / cols) * 100) + '% ' + (((r + 0.5) / rows) * 100) + '%';
+          sl.appendChild(tpl.cloneNode(true));
+          // diagonal wave + slight jitter
+          sl.__d = (r + c) * 34 + ((r * 7 + c * 13) % 3) * 12;
+          if (sl.__d > max) max = sl.__d;
+          tiles.push(sl);
+          stage.appendChild(sl);
         }
       }
-      panel.appendChild(m);
-      setTimeout(function () { m.remove(); }, maxDelay + 480);
+      stage.__tiles = tiles;
+      stage.__max = max;
+      panel.appendChild(stage);
+      return stage;
+    }
+    // finish on the LAST tile's animationend (exact, throttle-proof);
+    // a generous timer stays as the fallback for edge cases
+    function onLastTile(stage, panel, finish) {
+      var last = null;
+      stage.__tiles.forEach(function (sl) { if (!last || sl.__d > last.__d) last = sl; });
+      var fired = false;
+      var fin = function () {
+        if (fired) return;
+        fired = true;
+        finish();
+      };
+      last.addEventListener('animationend', fin, { once: true });
+      panel.__mosaicTimer = setTimeout(fin, stage.__max + 1200);
+    }
+    function mosaicIn(panel) {
+      if (reduceMotion) return;
+      clearStage(panel);
+      var stage = buildStage(panel);
+      panel.classList.add('is-building');
+      stage.__tiles.forEach(function (sl) {
+        sl.style.animation = 'tile-in 0.38s ' + EASE + ' ' + sl.__d + 'ms both';
+      });
+      onLastTile(stage, panel, function () { clearStage(panel); });
+    }
+    function mosaicOut(panel, done) {
+      if (reduceMotion || !panel.classList.contains('is-on')) { done(); return; }
+      clearStage(panel);
+      var stage = buildStage(panel);
+      panel.classList.add('is-building');
+      var max = stage.__max;
+      stage.__tiles.forEach(function (sl) {
+        sl.style.animation = 'tile-out 0.34s ' + EASE + ' ' + (max - sl.__d) + 'ms both';
+      });
+      onLastTile(stage, panel, function () {
+        done(); // drop is-on while the real content is still hidden
+        panel.__mosaicTimer2 = setTimeout(function () { clearStage(panel); }, 240); // stay hidden through the fade
+      });
     }
     var controllers = [];
     grids.forEach(function (grid) {
@@ -435,10 +492,7 @@
           rc.setAttribute('rx', 13);
         });
         panel.classList.add('is-on');
-        if (mosaicSeen && !mosaicSeen.has(el)) {
-          mosaicSeen.add(el);
-          mosaicReveal(panel);
-        }
+        mosaicIn(panel);
         if (isMobile) {
           requestAnimationFrame(function () {
             var pr = panel.getBoundingClientRect();
@@ -450,8 +504,12 @@
       }
       function hideNow() {
         clearTimeout(hideTimer);
-        panel.classList.remove('is-on');
-        if (current) { current.classList.remove('is-spot'); current = null; }
+        var leaving = current;
+        current = null;
+        mosaicOut(panel, function () {
+          panel.classList.remove('is-on');
+          if (leaving) leaving.classList.remove('is-spot');
+        });
       }
       function scheduleHide() {
         clearTimeout(hideTimer);

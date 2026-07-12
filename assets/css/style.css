@@ -3821,34 +3821,48 @@ p { text-wrap: pretty; }
 }
 
 /* ============================================================
-   Round-59: mosaic assembly — the open member card builds from
-   small flipping tiles (diagonal wave, first reveal only).
-   Tiles animate transform+opacity only (GPU), then are removed.
+   Round-59b: mosaic cube assembly — the card's own content is
+   sliced into 3D tiles that flip into place on open and flip
+   away in reverse on close, every time. Slices are clip-path
+   pieces of a live clone; transform+opacity only.
    ============================================================ */
 .member-panel .panel-trace { z-index: 7; } /* teal frame draws above the tiles */
-.member-panel .mosaic {
+.member-panel .mosaic-stage {
   position: absolute;
   inset: 0;
-  z-index: 6; /* above panel content, below the traced border frame */
-  display: grid;
+  z-index: 6;
+  padding: inherit;        /* clone lays out exactly like the panel */
   border-radius: inherit;
   overflow: hidden;
+  perspective: 900px;
   pointer-events: none;
-  perspective: 700px;
 }
-.member-panel .mosaic i {
-  background: var(--white);
-  /* cover subpixel grid seams so no content slivers peek through early */
-  box-shadow: 0 0 0 1px var(--white);
+.member-panel .m-slice {
+  position: absolute;
+  inset: 0;
+  padding: inherit;
   backface-visibility: hidden;
-  transform-origin: 50% 50%;
-  animation: mosaic-flip-out 0.4s var(--ease-out) both;
 }
-@keyframes mosaic-flip-out {
-  0%   { opacity: 1; transform: rotateY(0deg) scale(1); }
-  55%  { opacity: 1; }
-  100% { opacity: 0; transform: rotateY(82deg) scale(0.82); }
+.member-panel .m-clone {
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+}
+/* the real content hides while the tiles perform */
+.member-panel.is-building > .panel-head,
+.member-panel.is-building > .panel-bio,
+.member-panel.is-building > .panel-foot { visibility: hidden; }
+
+@keyframes tile-in {
+  0%   { opacity: 0; transform: rotateY(-95deg); }
+  26%  { opacity: 1; }
+  100% { opacity: 1; transform: rotateY(0deg); }
+}
+@keyframes tile-out {
+  0%   { opacity: 1; transform: rotateY(0deg); }
+  74%  { opacity: 1; }
+  100% { opacity: 0; transform: rotateY(95deg); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .member-panel .mosaic { display: none; }
+  .member-panel .mosaic-stage { display: none; }
 }
