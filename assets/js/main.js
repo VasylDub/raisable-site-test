@@ -331,9 +331,11 @@
     }
     function buildStage(panel) {
       var w = panel.offsetWidth, h = panel.offsetHeight;
-      var cols = Math.max(3, Math.min(6, Math.round(w / 64)));
-      var rows = Math.max(3, Math.min(8, Math.round(h / 64)));
-      while (cols * rows > 30) rows -= 1; // keep the clone count light
+      // square tiles: ~30px, grown just enough to stay within the budget
+      var tile = Math.max(30, Math.sqrt((w * h) / 120));
+      var cols = Math.max(4, Math.round(w / tile));
+      var rows = Math.max(4, Math.round(h / tile));
+      while (cols * rows > 126) { if (rows > cols) rows -= 1; else cols -= 1; }
       var stage = document.createElement('div');
       stage.className = 'mosaic-stage';
       var tpl = document.createElement('div');
@@ -358,8 +360,8 @@
           skin.className = 'm-skin'; // this tile's piece of the panel box itself
           sl.appendChild(skin);
           sl.appendChild(tpl.cloneNode(true));
-          // diagonal wave + slight jitter
-          sl.__d = (r + c) * 34 + ((r * 7 + c * 13) % 3) * 12;
+          // diagonal wave + slight jitter (tighter steps: many more tiles)
+          sl.__d = (r + c) * 16 + ((r * 7 + c * 13) % 3) * 7;
           if (sl.__d > max) max = sl.__d;
           tiles.push(sl);
           stage.appendChild(sl);
@@ -390,7 +392,7 @@
       var stage = buildStage(panel);
       panel.classList.add('is-building');
       stage.__tiles.forEach(function (sl) {
-        sl.style.animation = 'tile-in 0.38s ' + EASE + ' ' + sl.__d + 'ms both';
+        sl.style.animation = 'tile-in 0.3s ' + EASE + ' ' + sl.__d + 'ms both';
       });
       onLastTile(stage, panel, function () { clearStage(panel); });
     }
@@ -401,7 +403,7 @@
       panel.classList.add('is-building');
       var max = stage.__max;
       stage.__tiles.forEach(function (sl) {
-        sl.style.animation = 'tile-out 0.34s ' + EASE + ' ' + (max - sl.__d) + 'ms both';
+        sl.style.animation = 'tile-out 0.28s ' + EASE + ' ' + (max - sl.__d) + 'ms both';
       });
       onLastTile(stage, panel, function () {
         done(); // drop is-on while the real content is still hidden
