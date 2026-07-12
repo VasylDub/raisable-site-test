@@ -330,11 +330,11 @@
       var old = panel.querySelector('.mosaic-stage');
       if (old) old.remove();
       var w = panel.offsetWidth, h = panel.offsetHeight;
-      // square tiles, ~40px, grown to stay within budget — fine but calm
-      var tile = Math.max(38, Math.sqrt((w * h) / 90));
-      var cols = Math.max(4, Math.round(w / tile));
-      var rows = Math.max(4, Math.round(h / tile));
-      while (cols * rows > 96) { if (rows > cols) rows -= 1; else cols -= 1; }
+      // fine square tiles (~18-27px), grown just enough to stay within budget
+      var tile = Math.max(18, Math.sqrt((w * h) / 360));
+      var cols = Math.max(6, Math.round(w / tile));
+      var rows = Math.max(6, Math.round(h / tile));
+      while (cols * rows > 380) { if (rows > cols) rows -= 1; else cols -= 1; }
       var stage = document.createElement('div');
       stage.className = 'mosaic-stage';
       var tpl = document.createElement('div');
@@ -358,7 +358,7 @@
           skin.className = 'm-skin';
           sl.appendChild(skin);
           sl.appendChild(tpl.cloneNode(true));
-          sl.__d = (r + c) * 14 + ((r * 7 + c * 13) % 3) * 8;
+          sl.__d = (r + c) * 10 + ((r * 7 + c * 13) % 3) * 5;
           if (sl.__d > max) max = sl.__d;
           tiles.push(sl);
           stage.appendChild(sl);
@@ -405,14 +405,14 @@
     }
     function mosaicIn(panel) {
       if (reduceMotion) return;
-      playStage(panel, 'tile-in', 0.45, false, function (stage) {
+      playStage(panel, 'tile-in', 0.55, false, function (stage) {
         panel.classList.remove('is-building');
         stage.style.display = 'none';
       });
     }
     function mosaicOut(panel, done) {
       if (reduceMotion || !panel.classList.contains('is-on')) { done(); return; }
-      playStage(panel, 'tile-out', 0.4, true, function (stage) {
+      playStage(panel, 'tile-out', 0.5, true, function (stage) {
         done(); // drop is-on while the real content is still hidden
         panel.__mosaicTimer2 = setTimeout(function () {
           panel.classList.remove('is-building');
@@ -484,6 +484,7 @@
             (h3 ? '<h3>' + h3.innerHTML + '</h3>' : '') +
             (role ? '<p class="team-role">' + role.innerHTML + '</p>' : '');
           pHead.hidden = false;
+          grid.classList.add('is-panel-open');
           panel.classList.add('is-mobile');
           panel.style.left = '0px';
           panel.style.width = cRect.width + 'px';
@@ -522,6 +523,7 @@
         clearTimeout(hideTimer);
         var leaving = current;
         current = null;
+        grid.classList.remove('is-panel-open');
         mosaicOut(panel, function () {
           panel.classList.remove('is-on');
           if (leaving) leaving.classList.remove('is-spot');

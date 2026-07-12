@@ -3872,15 +3872,23 @@ p { text-wrap: pretty; }
 /* calm, layered motion: pieces condense into place (soft rise + settle
    with a hint of 3D tilt) — no hard 90° strobing */
 @keyframes tile-in {
-  0%   { opacity: 0; transform: translateY(12px) rotateX(-24deg) scale(0.55); }
-  60%  { opacity: 1; }
+  0%   { opacity: 0; transform: translateY(7px) rotateX(-14deg) scale(0.72); }
+  55%  { opacity: 1; }
   100% { opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); }
 }
 @keyframes tile-out {
   0%   { opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); }
-  40%  { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-10px) rotateX(20deg) scale(0.6); }
+  45%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-6px) rotateX(12deg) scale(0.74); }
 }
 @media (prefers-reduced-motion: reduce) {
   .member-panel .mosaic-stage { display: none; }
 }
+
+
+/* ============================================================
+   Round-64: while the mobile connected card is open, the black
+   top rules of the grid's cards melt away (and return on close).
+   ============================================================ */
+.team-grid-4 .team-card { transition: border-top-color 0.3s ease; }
+.team-grid-4.is-panel-open .team-card { border-top-color: transparent; }
