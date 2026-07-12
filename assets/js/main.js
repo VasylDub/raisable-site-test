@@ -322,6 +322,9 @@
     // and flip away in reverse order on close — on every hover/tap.
     // transform+opacity only; the stage is torn down right after each run.
     var EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
+    // Lightweight cube mosaic: the plate builds from small 3D-turning cubes
+    // (plain divs — no content clones, so hundreds stay cheap), while the
+    // real content sweeps in under them with one synced diagonal mask.
     function stopStage(panel) {
       if (panel.__mosaicTimer) { clearTimeout(panel.__mosaicTimer); panel.__mosaicTimer = null; }
       if (panel.__mosaicTimer2) { clearTimeout(panel.__mosaicTimer2); panel.__mosaicTimer2 = null; }
@@ -330,93 +333,89 @@
       var old = panel.querySelector('.mosaic-stage');
       if (old) old.remove();
       var w = panel.offsetWidth, h = panel.offsetHeight;
-      // fine square tiles (~18-27px), grown just enough to stay within budget
       var tile = Math.max(18, Math.sqrt((w * h) / 360));
       var cols = Math.max(6, Math.round(w / tile));
       var rows = Math.max(6, Math.round(h / tile));
       while (cols * rows > 380) { if (rows > cols) rows -= 1; else cols -= 1; }
       var stage = document.createElement('div');
       stage.className = 'mosaic-stage';
-      var tpl = document.createElement('div');
-      tpl.className = 'm-clone';
-      Array.prototype.forEach.call(panel.children, function (ch) {
-        if (ch.classList.contains('panel-trace') || ch.classList.contains('mosaic-stage')) return;
-        tpl.appendChild(ch.cloneNode(true));
-      });
       var tiles = [];
       var max = 0;
       for (var r = 0; r < rows; r++) {
         for (var c = 0; c < cols; c++) {
-          var sl = document.createElement('div');
-          sl.className = 'm-slice';
-          var top = (r / rows) * 100, left = (c / cols) * 100;
-          var bottom = 100 - ((r + 1) / rows) * 100;
-          var right = 100 - ((c + 1) / cols) * 100;
-          sl.style.clipPath = 'inset(calc(' + top + '% - 0.3px) calc(' + right + '% - 0.3px) calc(' + bottom + '% - 0.3px) calc(' + left + '% - 0.3px))';
-          sl.style.transformOrigin = (((c + 0.5) / cols) * 100) + '% ' + (((r + 0.5) / rows) * 100) + '%';
-          var skin = document.createElement('div');
-          skin.className = 'm-skin';
-          sl.appendChild(skin);
-          sl.appendChild(tpl.cloneNode(true));
-          sl.__d = (r + c) * 10 + ((r * 7 + c * 13) % 3) * 5;
-          if (sl.__d > max) max = sl.__d;
-          tiles.push(sl);
-          stage.appendChild(sl);
+          var cube = document.createElement('i');
+          cube.style.left = (c / cols * 100) + '%';
+          cube.style.top = (r / rows * 100) + '%';
+          cube.style.width = (100 / cols) + '%';
+          cube.style.height = (100 / rows) + '%';
+          cube.__d = (r + c) * 8 + ((r * 7 + c * 13) % 3) * 4;
+          if (cube.__d > max) max = cube.__d;
+          tiles.push(cube);
+          stage.appendChild(cube);
         }
       }
       stage.__tiles = tiles;
       stage.__max = max;
-      stage.__member = panel.__member || null;
+      stage.__key = w + 'x' + h;
       panel.appendChild(stage);
       panel.__stage = stage;
       return stage;
     }
-    // reuse the cached stage while the member (and thus size/content) is
-    // unchanged — repeat hovers replay with zero DOM churn
     function ensureStage(panel) {
       var st = panel.__stage;
-      if (st && st.parentNode === panel && st.__member === panel.__member) return st;
+      var key = panel.offsetWidth + 'x' + panel.offsetHeight;
+      if (st && st.parentNode === panel && st.__key === key) return st;
       return buildStage(panel);
     }
-    function playStage(panel, name, dur, reversed, finish) {
+    function playStage(panel, reversed, finish) {
       var stage = ensureStage(panel);
       stopStage(panel);
       stage.style.display = '';
       panel.classList.add('is-building');
+      var body = panel.querySelector('.panel-body');
       var max = stage.__max;
-      // reset so the same animation can replay
-      stage.__tiles.forEach(function (sl) { sl.style.animation = 'none'; });
-      void stage.offsetWidth; // one reflow to commit the reset
-      stage.__tiles.forEach(function (sl) {
-        var d = reversed ? (max - sl.__d) : sl.__d;
-        sl.style.animation = name + ' ' + dur + 's ' + EASE + ' ' + d + 'ms both';
+      stage.__tiles.forEach(function (cb) { cb.style.animation = 'none'; });
+      if (body) body.style.animation = 'none';
+      void stage.offsetWidth; // commit the reset so replays restart
+      var cubeAnim = reversed ? 'cube-out 0.38s' : 'cube-in 0.42s';
+      stage.__tiles.forEach(function (cb) {
+        var d = reversed ? (max - cb.__d) : cb.__d;
+        cb.style.animation = cubeAnim + ' ' + EASE + ' ' + d + 'ms both';
       });
+      if (body) {
+        body.style.animation = (reversed ? 'body-wipe-out 0.5s' : 'body-wipe-in 0.62s') +
+          ' ' + EASE + ' both';
+      }
       var last = null;
-      stage.__tiles.forEach(function (sl) { if (!last || sl.__d > last.__d) last = sl; });
-      if (reversed) { stage.__tiles.forEach(function (sl) { if (sl.__d === 0) last = sl; }); }
+      stage.__tiles.forEach(function (cb) {
+        var d = reversed ? (max - cb.__d) : cb.__d;
+        if (!last || d > last.__fin) { last = cb; last.__fin = d; }
+      });
       var fired = false;
       var fin = function () {
         if (fired) return;
         fired = true;
-        finish(stage);
+        finish(stage, body);
       };
       last.addEventListener('animationend', fin, { once: true });
-      panel.__mosaicTimer = setTimeout(fin, max + dur * 1000 + 900);
+      panel.__mosaicTimer = setTimeout(fin, max + 1400);
     }
     function mosaicIn(panel) {
       if (reduceMotion) return;
-      playStage(panel, 'tile-in', 0.55, false, function (stage) {
+      playStage(panel, false, function (stage, body) {
         panel.classList.remove('is-building');
         stage.style.display = 'none';
+        if (body) body.style.animation = '';
       });
     }
     function mosaicOut(panel, done) {
       if (reduceMotion || !panel.classList.contains('is-on')) { done(); return; }
-      playStage(panel, 'tile-out', 0.5, true, function (stage) {
-        done(); // drop is-on while the real content is still hidden
+      playStage(panel, true, function (stage, body) {
+        done(); // drop is-on before the content returns
         panel.__mosaicTimer2 = setTimeout(function () {
           panel.classList.remove('is-building');
           stage.style.display = 'none';
+          if (body) body.style.animation = '';
         }, 120);
       });
     }
@@ -430,11 +429,13 @@
         '<svg class="panel-trace" preserveAspectRatio="none" aria-hidden="true">' +
         '<rect class="tr-line" pathLength="100"/><rect class="tr-dot" pathLength="100"/>' +
         '<rect class="tr-shine" pathLength="100"/></svg>' +
+        '<div class="panel-body">' +
         '<div class="panel-head" hidden></div>' +
         '<p class="panel-bio"></p><div class="panel-foot">' +
         '<a class="panel-li" target="_blank" rel="noopener" aria-label="LinkedIn profile" hidden>' +
         '<img src="assets/img/LG_LINKEDIN_ICON.svg" alt="LinkedIn"></a>' +
-        '<div class="panel-tags"></div></div>';
+        '<div class="panel-tags"></div></div>' +
+        '</div>';
       grid.appendChild(panel);
       var pHead = panel.querySelector('.panel-head');
       var pBio = panel.querySelector('.panel-bio');
