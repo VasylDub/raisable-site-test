@@ -317,6 +317,37 @@
     if (!grids.length) return;
     var hasHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     document.documentElement.classList.add('member-panels-on');
+    // mosaic assembly: the open card builds from small flipping tiles.
+    // Played once per member (repeat hovers get the plain quick fade) and
+    // skipped entirely under reduced motion. Tiles animate transform+opacity
+    // only, are removed right after, so cost is a brief GPU-only burst.
+    var mosaicSeen = typeof WeakSet === 'function' ? new WeakSet() : null;
+    function mosaicReveal(panel) {
+      if (reduceMotion) return;
+      var prev = panel.querySelector('.mosaic');
+      if (prev) prev.remove();
+      var w = panel.offsetWidth, h = panel.offsetHeight;
+      var cols = Math.max(3, Math.min(8, Math.round(w / 56)));
+      var rows = Math.max(3, Math.min(10, Math.round(h / 56)));
+      while (cols * rows > 56) rows -= 1; // cap the tile count
+      var m = document.createElement('div');
+      m.className = 'mosaic';
+      m.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+      m.style.gridTemplateRows = 'repeat(' + rows + ', 1fr)';
+      var maxDelay = 0;
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          var t = document.createElement('i');
+          // diagonal wave + a touch of jitter so it reads organic, not scanline
+          var d = (r + c) * 36 + ((r * 7 + c * 13) % 3) * 14;
+          if (d > maxDelay) maxDelay = d;
+          t.style.animationDelay = d + 'ms';
+          m.appendChild(t);
+        }
+      }
+      panel.appendChild(m);
+      setTimeout(function () { m.remove(); }, maxDelay + 480);
+    }
     var controllers = [];
     grids.forEach(function (grid) {
       var members = grid.querySelectorAll('[data-member-panel]');
@@ -404,6 +435,10 @@
           rc.setAttribute('rx', 13);
         });
         panel.classList.add('is-on');
+        if (mosaicSeen && !mosaicSeen.has(el)) {
+          mosaicSeen.add(el);
+          mosaicReveal(panel);
+        }
         if (isMobile) {
           requestAnimationFrame(function () {
             var pr = panel.getBoundingClientRect();

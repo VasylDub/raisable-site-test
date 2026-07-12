@@ -3819,3 +3819,36 @@ p { text-wrap: pretty; }
 @media (prefers-reduced-motion: reduce) {
   .peek-up, .faq-peek { animation: none; }
 }
+
+/* ============================================================
+   Round-59: mosaic assembly — the open member card builds from
+   small flipping tiles (diagonal wave, first reveal only).
+   Tiles animate transform+opacity only (GPU), then are removed.
+   ============================================================ */
+.member-panel .panel-trace { z-index: 7; } /* teal frame draws above the tiles */
+.member-panel .mosaic {
+  position: absolute;
+  inset: 0;
+  z-index: 6; /* above panel content, below the traced border frame */
+  display: grid;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 700px;
+}
+.member-panel .mosaic i {
+  background: var(--white);
+  /* cover subpixel grid seams so no content slivers peek through early */
+  box-shadow: 0 0 0 1px var(--white);
+  backface-visibility: hidden;
+  transform-origin: 50% 50%;
+  animation: mosaic-flip-out 0.4s var(--ease-out) both;
+}
+@keyframes mosaic-flip-out {
+  0%   { opacity: 1; transform: rotateY(0deg) scale(1); }
+  55%  { opacity: 1; }
+  100% { opacity: 0; transform: rotateY(82deg) scale(0.82); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .member-panel .mosaic { display: none; }
+}
