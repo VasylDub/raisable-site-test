@@ -3848,10 +3848,24 @@ p { text-wrap: pretty; }
   inset: 0;
   padding: inherit;
 }
-/* the real content hides while the tiles perform */
+/* while the tiles perform, the real plate AND content vanish — the whole
+   window exists only as the flipping pieces */
+.member-panel.is-building {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
 .member-panel.is-building > .panel-head,
 .member-panel.is-building > .panel-bio,
 .member-panel.is-building > .panel-foot { visibility: hidden; }
+/* each tile's piece of the panel box: bg + border + rounded corners */
+.member-panel .m-skin {
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
 
 @keyframes tile-in {
   0%   { opacity: 0; transform: rotateY(-95deg); }

@@ -354,6 +354,9 @@
           // 0.3px bleed hides subpixel seams between slices
           sl.style.clipPath = 'inset(calc(' + top + '% - 0.3px) calc(' + right + '% - 0.3px) calc(' + bottom + '% - 0.3px) calc(' + left + '% - 0.3px))';
           sl.style.transformOrigin = (((c + 0.5) / cols) * 100) + '% ' + (((r + 0.5) / rows) * 100) + '%';
+          var skin = document.createElement('div');
+          skin.className = 'm-skin'; // this tile's piece of the panel box itself
+          sl.appendChild(skin);
           sl.appendChild(tpl.cloneNode(true));
           // diagonal wave + slight jitter
           sl.__d = (r + c) * 34 + ((r * 7 + c * 13) % 3) * 12;
