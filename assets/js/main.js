@@ -322,20 +322,19 @@
     // and flip away in reverse order on close — on every hover/tap.
     // transform+opacity only; the stage is torn down right after each run.
     var EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
-    function clearStage(panel) {
-      var st = panel.querySelector('.mosaic-stage');
-      if (st) st.remove();
-      panel.classList.remove('is-building');
+    function stopStage(panel) {
       if (panel.__mosaicTimer) { clearTimeout(panel.__mosaicTimer); panel.__mosaicTimer = null; }
       if (panel.__mosaicTimer2) { clearTimeout(panel.__mosaicTimer2); panel.__mosaicTimer2 = null; }
     }
     function buildStage(panel) {
+      var old = panel.querySelector('.mosaic-stage');
+      if (old) old.remove();
       var w = panel.offsetWidth, h = panel.offsetHeight;
-      // square tiles: ~30px, grown just enough to stay within the budget
-      var tile = Math.max(30, Math.sqrt((w * h) / 120));
+      // square tiles, ~40px, grown to stay within budget — fine but calm
+      var tile = Math.max(38, Math.sqrt((w * h) / 90));
       var cols = Math.max(4, Math.round(w / tile));
       var rows = Math.max(4, Math.round(h / tile));
-      while (cols * rows > 126) { if (rows > cols) rows -= 1; else cols -= 1; }
+      while (cols * rows > 96) { if (rows > cols) rows -= 1; else cols -= 1; }
       var stage = document.createElement('div');
       stage.className = 'mosaic-stage';
       var tpl = document.createElement('div');
@@ -353,15 +352,13 @@
           var top = (r / rows) * 100, left = (c / cols) * 100;
           var bottom = 100 - ((r + 1) / rows) * 100;
           var right = 100 - ((c + 1) / cols) * 100;
-          // 0.3px bleed hides subpixel seams between slices
           sl.style.clipPath = 'inset(calc(' + top + '% - 0.3px) calc(' + right + '% - 0.3px) calc(' + bottom + '% - 0.3px) calc(' + left + '% - 0.3px))';
           sl.style.transformOrigin = (((c + 0.5) / cols) * 100) + '% ' + (((r + 0.5) / rows) * 100) + '%';
           var skin = document.createElement('div');
-          skin.className = 'm-skin'; // this tile's piece of the panel box itself
+          skin.className = 'm-skin';
           sl.appendChild(skin);
           sl.appendChild(tpl.cloneNode(true));
-          // diagonal wave + slight jitter (tighter steps: many more tiles)
-          sl.__d = (r + c) * 16 + ((r * 7 + c * 13) % 3) * 7;
+          sl.__d = (r + c) * 14 + ((r * 7 + c * 13) % 3) * 8;
           if (sl.__d > max) max = sl.__d;
           tiles.push(sl);
           stage.appendChild(sl);
@@ -369,45 +366,58 @@
       }
       stage.__tiles = tiles;
       stage.__max = max;
+      stage.__member = panel.__member || null;
       panel.appendChild(stage);
+      panel.__stage = stage;
       return stage;
     }
-    // finish on the LAST tile's animationend (exact, throttle-proof);
-    // a generous timer stays as the fallback for edge cases
-    function onLastTile(stage, panel, finish) {
+    // reuse the cached stage while the member (and thus size/content) is
+    // unchanged — repeat hovers replay with zero DOM churn
+    function ensureStage(panel) {
+      var st = panel.__stage;
+      if (st && st.parentNode === panel && st.__member === panel.__member) return st;
+      return buildStage(panel);
+    }
+    function playStage(panel, name, dur, reversed, finish) {
+      var stage = ensureStage(panel);
+      stopStage(panel);
+      stage.style.display = '';
+      panel.classList.add('is-building');
+      var max = stage.__max;
+      // reset so the same animation can replay
+      stage.__tiles.forEach(function (sl) { sl.style.animation = 'none'; });
+      void stage.offsetWidth; // one reflow to commit the reset
+      stage.__tiles.forEach(function (sl) {
+        var d = reversed ? (max - sl.__d) : sl.__d;
+        sl.style.animation = name + ' ' + dur + 's ' + EASE + ' ' + d + 'ms both';
+      });
       var last = null;
       stage.__tiles.forEach(function (sl) { if (!last || sl.__d > last.__d) last = sl; });
+      if (reversed) { stage.__tiles.forEach(function (sl) { if (sl.__d === 0) last = sl; }); }
       var fired = false;
       var fin = function () {
         if (fired) return;
         fired = true;
-        finish();
+        finish(stage);
       };
       last.addEventListener('animationend', fin, { once: true });
-      panel.__mosaicTimer = setTimeout(fin, stage.__max + 1200);
+      panel.__mosaicTimer = setTimeout(fin, max + dur * 1000 + 900);
     }
     function mosaicIn(panel) {
       if (reduceMotion) return;
-      clearStage(panel);
-      var stage = buildStage(panel);
-      panel.classList.add('is-building');
-      stage.__tiles.forEach(function (sl) {
-        sl.style.animation = 'tile-in 0.3s ' + EASE + ' ' + sl.__d + 'ms both';
+      playStage(panel, 'tile-in', 0.45, false, function (stage) {
+        panel.classList.remove('is-building');
+        stage.style.display = 'none';
       });
-      onLastTile(stage, panel, function () { clearStage(panel); });
     }
     function mosaicOut(panel, done) {
       if (reduceMotion || !panel.classList.contains('is-on')) { done(); return; }
-      clearStage(panel);
-      var stage = buildStage(panel);
-      panel.classList.add('is-building');
-      var max = stage.__max;
-      stage.__tiles.forEach(function (sl) {
-        sl.style.animation = 'tile-out 0.28s ' + EASE + ' ' + (max - sl.__d) + 'ms both';
-      });
-      onLastTile(stage, panel, function () {
+      playStage(panel, 'tile-out', 0.4, true, function (stage) {
         done(); // drop is-on while the real content is still hidden
-        panel.__mosaicTimer2 = setTimeout(function () { clearStage(panel); }, 240); // stay hidden through the fade
+        panel.__mosaicTimer2 = setTimeout(function () {
+          panel.classList.remove('is-building');
+          stage.style.display = 'none';
+        }, 120);
       });
     }
     var controllers = [];
@@ -496,6 +506,7 @@
           rc.setAttribute('width', w - 2); rc.setAttribute('height', h - 2);
           rc.setAttribute('rx', 13);
         });
+        panel.__member = el;
         panel.classList.add('is-on');
         mosaicIn(panel);
         if (isMobile) {

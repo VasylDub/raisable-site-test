@@ -3849,11 +3849,13 @@ p { text-wrap: pretty; }
   padding: inherit;
 }
 /* while the tiles perform, the real plate AND content vanish — the whole
-   window exists only as the flipping pieces */
+   window exists only as the moving pieces. transition:none kills the
+   panel's own 0.2s fade so tiles are the ONLY motion (no muddy double-fade) */
 .member-panel.is-building {
   background: transparent;
   border-color: transparent;
   box-shadow: none;
+  transition: none;
 }
 .member-panel.is-building > .panel-head,
 .member-panel.is-building > .panel-bio,
@@ -3867,15 +3869,17 @@ p { text-wrap: pretty; }
   border-radius: 14px;
 }
 
+/* calm, layered motion: pieces condense into place (soft rise + settle
+   with a hint of 3D tilt) — no hard 90° strobing */
 @keyframes tile-in {
-  0%   { opacity: 0; transform: rotateY(-95deg); }
-  26%  { opacity: 1; }
-  100% { opacity: 1; transform: rotateY(0deg); }
+  0%   { opacity: 0; transform: translateY(12px) rotateX(-24deg) scale(0.55); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); }
 }
 @keyframes tile-out {
-  0%   { opacity: 1; transform: rotateY(0deg); }
-  74%  { opacity: 1; }
-  100% { opacity: 0; transform: rotateY(95deg); }
+  0%   { opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); }
+  40%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px) rotateX(20deg) scale(0.6); }
 }
 @media (prefers-reduced-motion: reduce) {
   .member-panel .mosaic-stage { display: none; }
