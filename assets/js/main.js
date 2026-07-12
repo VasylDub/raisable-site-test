@@ -333,10 +333,14 @@
       var old = panel.querySelector('.mosaic-stage');
       if (old) old.remove();
       var w = panel.offsetWidth, h = panel.offsetHeight;
-      var tile = Math.max(18, Math.sqrt((w * h) / 360));
-      var cols = Math.max(6, Math.round(w / tile));
-      var rows = Math.max(6, Math.round(h / tile));
-      while (cols * rows > 380) { if (rows > cols) rows -= 1; else cols -= 1; }
+      // phones / low-memory devices get a lighter grid (fewer GPU layers)
+      var lite = (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+                 !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      var budget = lite ? 130 : 220;
+      var tile = Math.max(22, Math.sqrt((w * h) / budget));
+      var cols = Math.max(5, Math.round(w / tile));
+      var rows = Math.max(5, Math.round(h / tile));
+      while (cols * rows > budget + 20) { if (rows > cols) rows -= 1; else cols -= 1; }
       var stage = document.createElement('div');
       stage.className = 'mosaic-stage';
       var tiles = [];
@@ -383,8 +387,9 @@
         cb.style.animation = cubeAnim + ' ' + EASE + ' ' + d + 'ms both';
       });
       if (body) {
-        body.style.animation = (reversed ? 'body-wipe-out 0.5s' : 'body-wipe-in 0.62s') +
-          ' ' + EASE + ' both';
+        // opacity only — fully compositor-driven, no per-frame repaints
+        body.style.animation = (reversed ? 'body-fade-out 0.32s ' + EASE + ' both'
+                                         : 'body-fade-in 0.5s ' + EASE + ' 0.12s both');
       }
       var last = null;
       stage.__tiles.forEach(function (cb) {

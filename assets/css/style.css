@@ -3841,7 +3841,6 @@ p { text-wrap: pretty; }
   display: block;
   background: var(--white);
   box-shadow: 0 0 0 0.5px var(--white); /* covers subpixel seams */
-  backface-visibility: hidden;
 }
 /* while cubes perform, the real plate hides (border stays as the outline
    the cubes fill in); transition:none kills the panel's own fade */
@@ -3861,22 +3860,14 @@ p { text-wrap: pretty; }
   65%  { opacity: 1; }
   100% { opacity: 0; transform: rotateY(90deg); }
 }
-/* content: one diagonal wipe synced with the cube wave */
-@keyframes body-wipe-in {
-  from { -webkit-mask-position: 92% 92%; mask-position: 92% 92%; }
-  to   { -webkit-mask-position: 0% 0%; mask-position: 0% 0%; }
+/* content: a single composited fade timed to the cube wave */
+@keyframes body-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-@keyframes body-wipe-out {
-  from { -webkit-mask-position: 0% 0%; mask-position: 0% 0%; }
-  to   { -webkit-mask-position: 92% 92%; mask-position: 92% 92%; }
-}
-.member-panel.is-building .panel-body {
-  -webkit-mask-image: linear-gradient(135deg, #000 42%, transparent 60%);
-  mask-image: linear-gradient(135deg, #000 42%, transparent 60%);
-  -webkit-mask-size: 280% 280%;
-  mask-size: 280% 280%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+@keyframes body-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .member-panel .mosaic-stage { display: none; }
