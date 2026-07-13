@@ -556,6 +556,12 @@
             if (current === el) hideNow(); else showPanel(el);
           });
         });
+        // the open card covers its source tile, so a second tap lands on the
+        // panel — tapping it (anywhere but a link) closes the card
+        panel.addEventListener('click', function (e) {
+          if (e.target.closest('a')) return;
+          hideNow();
+        });
         controllers.push({
           panel: panel,
           holds: function (t) { return panel.contains(t) || (current && current.contains(t)); },
