@@ -462,6 +462,20 @@
       submitBtn.hidden = current !== 4;
       modal.scrollTop = 0;
       track('form_step', { type: 'founder', step: current });
+      track('form_step_' + current, { type: 'founder' });
+    }
+
+    // "How did you hear" = referral -> ask who exactly
+    var heardSel = founderForm ? founderForm.querySelector('#f-heard') : null;
+    var refField = founderForm ? founderForm.querySelector('[data-referrer-field]') : null;
+    if (heardSel && refField) {
+      var refInput = refField.querySelector('input');
+      heardSel.addEventListener('change', function () {
+        var isRef = /referral/i.test(heardSel.value);
+        refField.hidden = !isRef;
+        refInput.required = isRef;
+        if (!isRef) refInput.value = '';
+      });
     }
 
     function goNext() {

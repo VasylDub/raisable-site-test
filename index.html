@@ -161,7 +161,7 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="assets/css/style.css?v=74">
+  <link rel="stylesheet" href="assets/css/style.css?v=75">
   <noscript><style>
     .load { animation: none; opacity: 1; transform: none; }
     .reveal { opacity: 1; transform: none; visibility: visible; transition: none; }
@@ -1155,7 +1155,8 @@
             <label class="radio"><input type="radio" name="mrr_band" value="Under $5K"><span>Under $5K</span></label>
             <label class="radio"><input type="radio" name="mrr_band" value="$5K–$25K"><span>$5K–$25K</span></label>
             <label class="radio"><input type="radio" name="mrr_band" value="$25K–$100K"><span>$25K–$100K</span></label>
-            <label class="radio"><input type="radio" name="mrr_band" value="Over $100K"><span>Over $100K</span></label>
+            <label class="radio"><input type="radio" name="mrr_band" value="$100K–$500K"><span>$100K–$500K</span></label>
+            <label class="radio"><input type="radio" name="mrr_band" value="Over $500K"><span>Over $500K</span></label>
           </div>
           <div class="field" data-radios="us_customers">
             <span class="field-label">Do you have existing customers in the US? *</span>
@@ -1246,6 +1247,11 @@
               <option>YouTube</option>
               <option>Other</option>
             </select>
+          </div>
+          <div class="field" data-referrer-field hidden>
+            <label for="f-referrer">Name of the person who told you about Raisable *</label>
+            <input id="f-referrer" name="referrer_name" type="text" autocomplete="off"
+                   placeholder="Their name">
           </div>
           <div class="field">
             <label for="f-notes">Anything else you'd like us to know? <span class="optional">(optional)</span></label>
@@ -1373,7 +1379,7 @@
     </div>
   </dialog>
 
-  <script src="assets/js/main.js?v=74" defer></script>
-  <script src="assets/js/forms.js?v=74" defer></script>
+  <script src="assets/js/main.js?v=75" defer></script>
+  <script src="assets/js/forms.js?v=75" defer></script>
 </body>
 </html>
