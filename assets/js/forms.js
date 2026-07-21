@@ -416,9 +416,13 @@
         : '';
       return '<h3 class="success-h">Application received.</h3>' + bootcampLine +
         '<div class="success-body"><p>We review every application personally. If there’s a fit, you’ll hear from us within a few days.</p></div>' +
-        '<div class="success-links">' +
-        '<a href="https://www.youtube.com/@RaisableFounders" target="_blank" rel="noopener">Meanwhile — subscribe on YouTube →</a>' +
-        '<a href="https://luma.com/raisable" target="_blank" rel="noopener">Follow our event calendar →</a></div>';
+        '<div class="success-links success-social">' +
+        '<p class="social-note">Meanwhile — follow our social media and event calendar</p>' +
+        '<div class="social-row">' +
+        '<a href="https://www.youtube.com/@RaisableFounders" target="_blank" rel="noopener" aria-label="Raisable on YouTube"><img src="assets/img/LG_YOUTUBE_ICON.svg" alt="YouTube"></a>' +
+        '<a href="https://www.linkedin.com/company/raisable-global/" target="_blank" rel="noopener" aria-label="Raisable on LinkedIn"><img src="assets/img/LG_LINKEDIN_ICON.svg" alt="LinkedIn"></a>' +
+        '<a href="https://luma.com/raisable" target="_blank" rel="noopener" aria-label="Raisable event calendar on Luma"><img src="assets/img/LG_LUMA_ICON.png" alt="Luma"></a>' +
+        '</div></div>';
     }
     if (type === 'investor') {
       return '<h3 class="success-h">Thanks — <em>let’s talk.</em></h3>' +

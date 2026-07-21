@@ -3880,3 +3880,37 @@ p { text-wrap: pretty; }
    ============================================================ */
 .team-grid-4 .team-card { transition: border-top-color 0.3s ease; }
 .team-grid-4.is-panel-open .team-card { border-top-color: transparent; }
+
+/* ============================================================
+   Round-69: success screen — social row (YouTube · LinkedIn ·
+   Luma) under "follow our social media" note.
+   ============================================================ */
+.success-social .social-note {
+  color: var(--teal);
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.success-social .social-row {
+  display: flex;
+  gap: 14px;
+}
+.success-social .social-row a {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(248, 249, 246, 0.18);
+  border-radius: 10px;
+  transition: border-color 0.2s ease, transform 0.2s var(--ease-out);
+}
+.success-social .social-row a:hover {
+  border-color: var(--teal);
+  transform: translateY(-2px);
+}
+.success-social .social-row img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+.success-social .social-row img[src*="LUMA"] { border-radius: 5px; }
