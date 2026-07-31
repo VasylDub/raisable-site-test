@@ -94,6 +94,26 @@
   window.addEventListener('hashchange', routeFromHash);
   routeFromHash();
 
+  /* ---------- data-max groups: block picks beyond the cap ---------- */
+  modal.querySelectorAll('[data-chips][data-max], [data-checks][data-max]').forEach(function (group) {
+    var max = parseInt(group.getAttribute('data-max'), 10);
+    group.addEventListener('change', function (e) {
+      if (!e.target.checked) return;
+      if (group.querySelectorAll('input:checked').length > max) {
+        e.target.checked = false;
+        var wrap = group.closest('.field');
+        var err = wrap.querySelector('.field-error');
+        if (!err) {
+          err = document.createElement('p');
+          err.className = 'field-error';
+          wrap.appendChild(err);
+        }
+        err.textContent = 'Up to ' + max + ' — deselect one first.';
+        setTimeout(function () { if (err.parentNode) err.remove(); }, 2200);
+      }
+    });
+  });
+
   /* ---------- Shared helpers ---------- */
   function normalizeUrl(v) {
     v = (v || '').trim();

@@ -161,7 +161,7 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="assets/css/style.css?v=76">
+  <link rel="stylesheet" href="assets/css/style.css?v=77">
   <noscript><style>
     .load { animation: none; opacity: 1; transform: none; }
     .reveal { opacity: 1; transform: none; visibility: visible; transition: none; }
@@ -1305,6 +1305,38 @@
           <label for="i-fund">Fund name &amp; website *</label>
           <input id="i-fund" name="fund_name" type="text">
         </div>
+        <div class="field" data-radios="check_size">
+          <span class="field-label">Average check size *</span>
+          <label class="radio"><input type="radio" name="check_size" value="Under $25K" required><span>Under $25K</span></label>
+          <label class="radio"><input type="radio" name="check_size" value="$25K–$100K"><span>$25K–$100K</span></label>
+          <label class="radio"><input type="radio" name="check_size" value="$100K–$500K"><span>$100K–$500K</span></label>
+          <label class="radio"><input type="radio" name="check_size" value="$500K–$2M"><span>$500K–$2M</span></label>
+          <label class="radio"><input type="radio" name="check_size" value="Over $2M"><span>Over $2M</span></label>
+        </div>
+        <div class="field">
+          <span class="field-label">Stages you invest in *</span>
+          <div class="checks" data-checks="stage_focus" data-min="1">
+            <label class="check"><input type="checkbox" name="stage_focus" value="Pre-seed"><span>Pre-seed</span></label>
+            <label class="check"><input type="checkbox" name="stage_focus" value="Seed"><span>Seed</span></label>
+            <label class="check"><input type="checkbox" name="stage_focus" value="Series A"><span>Series A</span></label>
+            <label class="check"><input type="checkbox" name="stage_focus" value="Series B+"><span>Series B+</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="field-label">Industries you're most interested in * <span class="optional">(top 3)</span></span>
+          <div class="chips" data-chips="industries_focus" data-min="1" data-max="3">
+            <label class="chip"><input type="checkbox" name="industries_focus" value="AI / ML"><span>AI / ML</span></label>
+            <label class="chip"><input type="checkbox" name="industries_focus" value="SaaS / B2B Software"><span>SaaS / B2B</span></label>
+            <label class="chip"><input type="checkbox" name="industries_focus" value="Fintech"><span>Fintech</span></label>
+            <label class="chip"><input type="checkbox" name="industries_focus" value="HealthTech / BioTech"><span>HealthTech / BioTech</span></label>
+            <label class="chip"><input type="checkbox" name="industries_focus" value="DeepTech / Hardware"><span>DeepTech / Hardware</span></label>
+            <label class="chip"><input type="checkbox" name="industries_focus" value="Marketplace / E-commerce"><span>Marketplace / E-com</span></label>
+            <label class="chip"><input type="checkbox" name="industries_focus" value="Consumer / Apps"><span>Consumer / Apps</span></label>
+            <label class="chip"><input type="checkbox" name="industries_focus" value="Climate / CleanTech"><span>Climate</span></label>
+            <label class="chip"><input type="checkbox" name="industries_focus" value="Web3 / Blockchain"><span>Web3</span></label>
+            <label class="chip"><input type="checkbox" name="industries_focus" value="Industry-agnostic"><span>Industry-agnostic</span></label>
+          </div>
+        </div>
         <div class="field">
           <span class="field-label">How would you like to engage? *</span>
           <div class="checks" data-checks="engagement" data-min="1">
@@ -1314,6 +1346,11 @@
             <label class="check"><input type="checkbox" name="engagement" value="Speaking at a Raisable Session"><span>Speaking at a Raisable Session</span></label>
             <label class="check"><input type="checkbox" name="engagement" value="Co-hosting a dinner or event"><span>Co-hosting a dinner or event</span></label>
           </div>
+        </div>
+        <div class="field">
+          <label for="i-thesis">Help us understand your investment criteria <span class="optional">(optional)</span></label>
+          <textarea id="i-thesis" name="thesis" rows="3" maxlength="800"
+            placeholder="Thesis, geography, must-haves — anything that helps us prepare for the call"></textarea>
         </div>
         <div class="field">
           <label class="check consent"><input type="checkbox" name="consent" required><span>I agree
@@ -1379,7 +1416,7 @@
     </div>
   </dialog>
 
-  <script src="assets/js/main.js?v=76" defer></script>
-  <script src="assets/js/forms.js?v=76" defer></script>
+  <script src="assets/js/main.js?v=77" defer></script>
+  <script src="assets/js/forms.js?v=77" defer></script>
 </body>
 </html>
