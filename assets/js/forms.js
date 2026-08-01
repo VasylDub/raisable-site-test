@@ -489,10 +489,11 @@
       track('form_step_' + current, { type: 'founder' });
     }
 
-    // "How did you hear" = referral -> ask who exactly
-    var heardSel = founderForm ? founderForm.querySelector('#f-heard') : null;
-    var refField = founderForm ? founderForm.querySelector('[data-referrer-field]') : null;
-    if (heardSel && refField) {
+    // "How did you hear" = referral -> ask who exactly (all forms)
+    modal.querySelectorAll('form.lead-form').forEach(function (fm) {
+      var heardSel = fm.querySelector('select[name="heard_from"]');
+      var refField = fm.querySelector('[data-referrer-field]');
+      if (!heardSel || !refField) return;
       var refInput = refField.querySelector('input');
       heardSel.addEventListener('change', function () {
         var isRef = /referral/i.test(heardSel.value);
@@ -500,7 +501,7 @@
         refInput.required = isRef;
         if (!isRef) refInput.value = '';
       });
-    }
+    });
 
     function goNext() {
       if (current >= 4) return;

@@ -161,7 +161,7 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="assets/css/style.css?v=77">
+  <link rel="stylesheet" href="assets/css/style.css?v=78">
   <noscript><style>
     .load { animation: none; opacity: 1; transform: none; }
     .reveal { opacity: 1; transform: none; visibility: visible; transition: none; }
@@ -1348,6 +1348,22 @@
           </div>
         </div>
         <div class="field">
+          <label for="i-heard">How did you hear about Raisable? *</label>
+          <select id="i-heard" name="heard_from" required>
+              <option value="" disabled selected>Choose one</option>
+              <option>LinkedIn</option>
+              <option>Referral (friend, colleague, mentor)</option>
+              <option>Event / Conference</option>
+              <option>Luma</option>
+              <option>YouTube</option>
+              <option>Other</option>
+          </select>
+        </div>
+        <div class="field" data-referrer-field hidden>
+          <label for="i-referrer">Name of the person who told you about Raisable *</label>
+          <input id="i-referrer" name="referrer_name" type="text" autocomplete="off" placeholder="Their name">
+        </div>
+        <div class="field">
           <label for="i-thesis">Help us understand your investment criteria <span class="optional">(optional)</span></label>
           <textarea id="i-thesis" name="thesis" rows="3" maxlength="800"
             placeholder="Thesis, geography, must-haves — anything that helps us prepare for the call"></textarea>
@@ -1401,6 +1417,22 @@
           <label class="radio"><input type="radio" name="timeline" value="Just exploring"><span>Just exploring</span></label>
         </div>
         <div class="field">
+          <label for="c-heard">How did you hear about Raisable? *</label>
+          <select id="c-heard" name="heard_from" required>
+              <option value="" disabled selected>Choose one</option>
+              <option>LinkedIn</option>
+              <option>Referral (friend, colleague, mentor)</option>
+              <option>Event / Conference</option>
+              <option>Luma</option>
+              <option>YouTube</option>
+              <option>Other</option>
+          </select>
+        </div>
+        <div class="field" data-referrer-field hidden>
+          <label for="c-referrer">Name of the person who told you about Raisable *</label>
+          <input id="c-referrer" name="referrer_name" type="text" autocomplete="off" placeholder="Their name">
+        </div>
+        <div class="field">
           <label class="check consent"><input type="checkbox" name="consent" required><span>I agree
             to receive emails from Raisable about my application and relevant programs. I can
             unsubscribe anytime. · <a href="https://accelerator.raisable.vc/privacy.html" target="_blank" rel="noopener">Privacy Policy</a></span></label>
@@ -1416,7 +1448,7 @@
     </div>
   </dialog>
 
-  <script src="assets/js/main.js?v=77" defer></script>
-  <script src="assets/js/forms.js?v=77" defer></script>
+  <script src="assets/js/main.js?v=78" defer></script>
+  <script src="assets/js/forms.js?v=78" defer></script>
 </body>
 </html>
