@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Silicon Valley ROI Track — Raisable</title>
+<meta name="description" content="Eight international founders. SF Tech Week + TechCrunch Disrupt, October 2026. Your badge gets you in the building — we get you in the room.">
+<!-- CONFIG: swap the Apply CTA href (search for APPLY) to the real form URL before go-live -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F8F9F6; --white:#FFFFFF; --ink:#0A2621; --soft:#4E6058;
+    --line:#E0E5DF; --teal:#00BD97; --teal-ink:#1C594E; --yellow:#FFC700;
+    --night:#0A2621; --night-2:#0D2C26; --night-line:rgba(248,249,246,.13); --night-soft:rgba(248,249,246,.68);
+    --plate:#E7F5EE;
+    --fd:"Alexandria","Avenir Next",sans-serif;
+    --fb:"Inter",-apple-system,"Segoe UI",sans-serif;
+    --fm:"IBM Plex Mono","SF Mono",monospace;
+    --w:1120px; --px:clamp(20px,5vw,48px);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--fb);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--w);margin:0 auto;padding-left:var(--px);padding-right:var(--px)}
+  section{padding:clamp(72px,10vw,132px) 0}
+  a{color:var(--teal-ink)}
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:2px}
+  .eyebrow{font-family:var(--fm);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-ink);display:flex;align-items:center;gap:.6em;margin:0 0 1.4rem}
+  .eyebrow::before{content:"";width:.55em;height:.55em;background:var(--teal);flex:none}
+  h1,h2,h3{font-family:var(--fd);line-height:1.08;margin:0;text-wrap:balance}
+  h2{font-size:clamp(1.8rem,3.8vw,2.75rem);font-weight:700;letter-spacing:-.015em}
+  h3{font-size:1.05rem;font-weight:600}
+  p{margin:0}
+  .lead{font-size:clamp(1.02rem,1.5vw,1.18rem);color:var(--soft);max-width:42rem}
+  .btn{display:inline-flex;align-items:center;gap:.55em;background:var(--teal);color:var(--ink);font-family:var(--fd);font-weight:600;font-size:1rem;padding:.9em 1.6em;border-radius:4px;text-decoration:none;border:1px solid var(--teal);transition:transform .18s cubic-bezier(.23,1,.32,1),box-shadow .18s}
+  .btn .ar{transition:transform .18s cubic-bezier(.23,1,.32,1)}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,189,151,.3)}
+  .btn:hover .ar{transform:translateX(3px)}
+  a.btn{color:var(--ink)}
+  .btn.ghost{background:transparent;color:inherit;border-color:var(--night-line)}
+  .dark a.btn.ghost{color:var(--paper)}
+  .mono{font-family:var(--fm)}
+  .dark{background:var(--night);color:var(--paper)}
+  .dark .lead{color:var(--night-soft)}
+  .dark .eyebrow{color:var(--teal)}
+  .dark a{color:var(--teal)}
+  .dark a.btn{color:var(--ink)}
+
+  /* reveal (JS adds .js; no-JS = fully visible) */
+  .js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.23,1,.32,1),transform .7s cubic-bezier(.23,1,.32,1)}
+  .js .rv.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none;transition:none}}
+
+  /* nav */
+  header.site{position:sticky;top:0;z-index:50;background:rgba(10,38,33,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--night-line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px var(--px);max-width:var(--w);margin:0 auto}
+  .logo{font-family:var(--fd);font-weight:700;letter-spacing:.06em;color:var(--teal);text-decoration:none;font-size:1rem;text-transform:uppercase}
+  .logo span{color:var(--paper);font-weight:500}
+  .nav .btn{padding:.5em 1.1em;font-size:.88rem}
+
+  /* hero */
+  .heroblock{position:relative;overflow:hidden}
+  .heroblock::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(52rem 30rem at 82% -10%,rgba(0,189,151,.16),transparent 60%),
+    radial-gradient(40rem 26rem at -10% 110%,rgba(0,189,151,.08),transparent 55%)}
+  .hero{position:relative;padding:clamp(84px,12vw,150px) 0 0}
+  .hero h1{font-size:clamp(2.3rem,6.2vw,4.5rem);font-weight:700;letter-spacing:-.02em;max-width:16ch}
+  .hero h1 em{font-style:normal;color:var(--teal)}
+  .hero .lead{margin:1.7rem 0 2.5rem;max-width:36rem}
+  .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+  .hero-facts{position:relative;margin-top:clamp(56px,8vw,100px);border-top:1px solid var(--night-line);display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));font-family:var(--fm);font-size:.74rem;letter-spacing:.07em;text-transform:uppercase}
+  .hero-facts div{padding:1.2rem 1rem 1.35rem 0;border-right:1px solid var(--night-line);color:var(--night-soft)}
+  .hero-facts div:last-child{border-right:0}
+  .hero-facts b{display:block;color:var(--paper);font-size:1.12rem;font-weight:500;margin-bottom:.25rem}
+  .hero-facts .seat b{color:var(--yellow)}
+
+  /* pain */
+  .pain{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:clamp(1.2rem,3vw,2.6rem);margin-top:2.8rem}
+  .pain article{border-top:1px solid var(--line);padding-top:1.1rem}
+  .pain .n{font-family:var(--fm);font-size:.72rem;letter-spacing:.1em;color:var(--teal-ink);text-transform:uppercase;display:block;margin-bottom:.5rem}
+  .pain b{font-family:var(--fd);font-weight:600;font-size:1.08rem;display:block;margin-bottom:.3rem}
+  .pain p{color:var(--soft);font-size:.95rem}
+
+  /* not-strip */
+  .notstrip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:2rem 0;margin-top:clamp(56px,8vw,88px)}
+  .notstrip .row{display:flex;flex-wrap:wrap;gap:.6rem 2rem;font-family:var(--fm);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+  .notstrip .row s{text-decoration-color:rgba(78,96,88,.6);text-decoration-thickness:1px}
+  .notstrip p{margin-top:1rem;font-family:var(--fd);font-weight:600;font-size:1.15rem;color:var(--ink)}
+
+  /* mechanism */
+  .mech{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.8rem;margin-top:3rem}
+  .mech article{border-top:2px solid var(--teal);padding-top:1.1rem}
+  .mech .when{font-family:var(--fm);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-ink);display:block;margin-bottom:.55rem}
+  .mech h3{font-size:1.15rem;margin-bottom:.45rem}
+  .mech p{color:var(--soft);font-size:.96rem}
+
+  /* itinerary */
+  .itin{margin-top:3rem;border:1px solid var(--night-line)}
+  .itin-row{display:grid;grid-template-columns:11.5rem 1fr;border-bottom:1px solid var(--night-line);transition:background .25s}
+  .itin-row:hover{background:var(--night-2)}
+  .itin-row:last-child{border-bottom:0}
+  .itin-row .d{font-family:var(--fm);font-size:.78rem;letter-spacing:.05em;padding:1rem 1.2rem;color:var(--night-soft);border-right:1px solid var(--night-line);text-transform:uppercase}
+  .itin-row .d b{display:block;color:var(--paper);font-weight:500}
+  .itin-row.remote .d b{color:var(--teal)}
+  .itin-row .what{padding:1rem 1.3rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem 1rem}
+  .itin-row .what h3{font-size:1rem}
+  .itin-row .what p{color:var(--night-soft);font-size:.9rem}
+  .tag{font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.16em .6em;border:1px solid var(--night-line);border-radius:99px;color:var(--night-soft);white-space:nowrap;margin-left:.6em;vertical-align:middle}
+  .tag.tw{border-color:rgba(0,189,151,.5);color:var(--teal)}
+  .tag.dis{border-color:rgba(255,199,0,.5);color:var(--yellow)}
+  .itin-note{margin-top:1.5rem;font-size:.95rem;color:var(--night-soft);max-width:52rem}
+  .itin-note b{color:var(--paper)}
+  @media(max-width:640px){.itin-row{grid-template-columns:1fr}.itin-row .d{border-right:0;padding-bottom:.4rem}.itin-row .what{padding-top:.2rem;flex-direction:column;gap:.15rem}}
+
+  /* rooms */
+  .rooms{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.8rem;margin-top:3rem}
+  .room{background:var(--white);border:1px solid var(--line);border-radius:4px;padding:1.7rem 1.6rem 1.2rem;transition:transform .25s cubic-bezier(.23,1,.32,1),box-shadow .25s}
+  .room:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(10,38,33,.09)}
+  .room .when{font-family:var(--fm);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:.4rem}
+  .room h3{font-size:1.3rem;font-weight:700;margin-bottom:.3rem}
+  .room>p{color:var(--soft);font-size:.92rem;margin-bottom:1rem}
+  .room ul{list-style:none;margin:0;padding:0}
+  .room li{padding:.6rem 0;border-top:1px solid var(--line);font-size:.93rem}
+  .room li b{font-weight:600}
+  .room li span{color:var(--soft);font-size:.85rem;display:block}
+  .rooms-note{margin-top:1.6rem;font-size:.92rem;color:var(--soft)}
+
+  /* guarantee */
+  .guar{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--night-line);border:1px solid var(--night-line);margin-top:3rem}
+  @media(max-width:760px){.guar{grid-template-columns:1fr}}
+  .guar>div{background:var(--night);padding:1.9rem 1.8rem}
+  .guar h3{font-size:1.12rem;margin-bottom:1rem}
+  .guar h3.g{color:var(--teal)}
+  .guar h3.n{color:var(--night-soft)}
+  .guar ul{list-style:none;margin:0;padding:0}
+  .guar li{padding:.5rem 0 .5rem 1.3rem;position:relative;font-size:.95rem;color:var(--night-soft)}
+  .guar li b{color:var(--paper);font-weight:600}
+  .guar li::before{content:"—";position:absolute;left:0;color:var(--teal)}
+  .guar .n-list li::before{color:var(--night-soft)}
+  .guar .sprint{margin-top:1.1rem;font-size:.9rem;color:var(--night-soft)}
+  .guar .sprint b{color:var(--paper)}
+
+  /* fit */
+  .fit{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,3.5rem);margin-top:2.8rem}
+  @media(max-width:760px){.fit{grid-template-columns:1fr}}
+  .fit ul{list-style:none;margin:.7rem 0 0;padding:0}
+  .fit li{padding:.65rem 0;border-bottom:1px solid var(--line);font-size:.96rem;color:var(--soft)}
+  .fit li b{color:var(--ink)}
+  .fit-line{margin-top:1.7rem;font-family:var(--fd);font-weight:600;font-size:1.1rem}
+
+  /* math */
+  .math{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,4rem);align-items:start;margin-top:2.8rem}
+  @media(max-width:820px){.math{grid-template-columns:1fr}}
+  table.trip{width:100%;border-collapse:collapse;font-size:.96rem}
+  table.trip td{padding:.7rem 0;border-bottom:1px solid var(--line)}
+  table.trip td:last-child{text-align:right;font-family:var(--fm);font-size:.86rem;white-space:nowrap}
+  table.trip tr.sum td{font-weight:600;border-bottom:none;padding-top:.95rem}
+  .math-point{background:var(--plate);border-radius:4px;padding:1.8rem 1.7rem}
+  .math-point .mono{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-ink)}
+  .math-point p{margin-top:.7rem;font-size:1.08rem}
+
+  /* proof */
+  .proof-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:2.8rem}
+  .proof-stats div{background:var(--white);padding:1.5rem 1.4rem}
+  .proof-stats b{font-family:var(--fd);font-size:1.85rem;font-weight:700;color:var(--teal-ink);display:block;font-variant-numeric:tabular-nums}
+  .proof-stats span{color:var(--soft);font-size:.87rem}
+  .proof-links{margin-top:1.6rem;font-size:.94rem;color:var(--soft)}
+
+  /* pricing */
+  .price-card{background:var(--white);border:1px solid var(--line);border-radius:4px;display:grid;grid-template-columns:1.05fr .95fr;margin-top:3rem;overflow:hidden;box-shadow:0 24px 60px rgba(10,38,33,.07)}
+  @media(max-width:820px){.price-card{grid-template-columns:1fr}}
+  .price-main{padding:2.3rem 2.1rem}
+  .price-main .amount{font-family:var(--fd);font-size:clamp(2.8rem,5vw,3.6rem);font-weight:700;letter-spacing:-.02em}
+  .price-main .amount small{font-size:.32em;font-weight:500;color:var(--soft);letter-spacing:0}
+  .price-main .sub{color:var(--soft);font-size:.95rem;margin:.4rem 0 1.6rem;max-width:26rem}
+  .price-incl{background:var(--plate);padding:2.3rem 2.1rem}
+  .price-incl h3{margin-bottom:.9rem}
+  .price-incl ul{list-style:none;margin:0;padding:0}
+  .price-incl li{padding:.4rem 0 .4rem 1.35rem;position:relative;font-size:.94rem}
+  .price-incl li::before{content:"—";position:absolute;left:0;color:var(--teal-ink)}
+  .price-terms{margin-top:1.7rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;font-size:.9rem;color:var(--soft)}
+  .price-terms b{color:var(--ink);display:block;font-weight:600;margin-bottom:.2rem}
+
+  /* apply */
+  .steps{counter-reset:s;margin:3rem 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.8rem}
+  .steps li{counter-increment:s;border-top:2px solid var(--teal);padding-top:1.05rem}
+  .steps li::before{content:"Step 0" counter(s);font-family:var(--fm);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.5rem}
+  .steps b{font-family:var(--fd);font-weight:600;font-size:1.1rem;display:block;margin-bottom:.35rem}
+  .steps p{color:var(--night-soft);font-size:.94rem}
+  .apply-cta{margin-top:2.8rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+  .apply-cta .mono{font-size:.78rem;color:var(--night-soft);letter-spacing:.06em;text-transform:uppercase}
+  .apply-cta .mono b{color:var(--yellow);font-weight:500}
+
+  /* faq */
+  .faq{max-width:50rem;margin-top:2.2rem}
+  .faq details{border-bottom:1px solid var(--line)}
+  .faq summary{cursor:pointer;padding:1.15rem 2.2rem 1.15rem 0;font-family:var(--fd);font-weight:600;font-size:1rem;list-style:none;position:relative}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";position:absolute;right:.2rem;top:50%;transform:translateY(-50%);font-family:var(--fm);color:var(--teal-ink);font-size:1.15rem}
+  .faq details[open] summary::after{content:"–"}
+  .faq details p{padding:0 0 1.2rem;color:var(--soft);font-size:.96rem;max-width:58ch}
+
+  footer.site{background:var(--night);color:var(--night-soft);padding:2.8rem 0;font-size:.88rem}
+  footer.site .wrap{display:flex;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;align-items:baseline}
+  footer.site a{color:var(--night-soft);text-decoration:none;margin-right:1.2rem}
+  footer.site a:hover{color:var(--teal)}
+
+  @media (prefers-reduced-motion:no-preference){
+    .hero h1,.hero .lead,.hero-ctas{animation:rise .8s cubic-bezier(.23,1,.32,1) both}
+    .hero .lead{animation-delay:.1s}.hero-ctas{animation-delay:.2s}
+    @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="nav" aria-label="Main">
+    <a class="logo" href="https://raisable.vc">Raisable<span> · SV ROI Track</span></a>
+    <a class="btn" href="#apply">Apply</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="dark heroblock">
+  <section class="hero wrap" id="top">
+    <p class="eyebrow">SF Tech Week + TechCrunch Disrupt · San Francisco · Oct 2026</p>
+    <h1>Your badge gets you in the building. <em>We get you in the room.</em></h1>
+    <p class="lead">Eight international founders. Positioning fixed before you fly. Rooms of investors during the week. A 90-day plan when you leave.</p>
+    <div class="hero-ctas">
+      <a class="btn" href="#apply">Apply for one of 8 seats <span class="ar">→</span></a>
+      <a class="btn ghost" href="#week">See the week ↓</a>
+    </div>
+    <div class="hero-facts" aria-label="Key facts">
+      <div class="seat"><b>8 seats</b>one company per seat</div>
+      <div><b>Oct 10–16</b>+ 3 prep weeks before</div>
+      <div><b>$3,500</b>flat · all included</div>
+      <div><b>Sep 18</b>applications close</div>
+    </div>
+  </section>
+</div>
+
+<!-- PAIN + NOT -->
+<section class="wrap" id="alone">
+  <p class="eyebrow rv">The default outcome</p>
+  <h2 class="rv">Unprepared is the most expensive way to fly 5,000 miles.</h2>
+  <div class="pain">
+    <article class="rv"><span class="n">Days 1–2</span><b>Lost to logistics</b><p>600+ events, no map. The people you came for are in rooms you don't know exist.</p></article>
+    <article class="rv"><span class="n">Days 3–5</span><b>One badge of 10,000</b><p>Every investor at Disrupt is hunted all day. Cold outreach from the expo floor loses.</p></article>
+    <article class="rv"><span class="n">The flight home</span><b>Contacts, not commitments</b><p>Sixty scanned badges. Zero booked follow-ups. Inspired ≠ funded.</p></article>
+  </div>
+  <div class="notstrip rv">
+    <div class="row"><s>Accelerator</s><s>Bootcamp</s><s>Networking event</s><s>SV tour</s><s>Membership</s></div>
+    <p>This is a conversion layer around a trip you already paid for.</p>
+  </div>
+</section>
+
+<!-- MECHANISM -->
+<section class="wrap" id="how" style="padding-top:0">
+  <p class="eyebrow rv">Why it works</p>
+  <h2 class="rv">Every alternative starts when you land.<br>This starts three weeks before your flight.</h2>
+  <div class="mech">
+    <article class="rv"><span class="when">Before · 3 weeks out</span><h3>Arrive positioned</h3><p>Your narrative rebuilt, 20–30 named targets mapped, your week booked before boarding.</p></article>
+    <article class="rv"><span class="when">During · Oct 10–16</span><h3>Walk into rooms, not halls</h3><p>A seated dinner, three named rooms, a stage we fill for you. Eight founders scouting for each other.</p></article>
+    <article class="rv"><span class="when">After · 90 days</span><h3>Leave with a plan in motion</h3><p>A written 90-day plan, every promised intro witnessed, tracked at day 30 and 90.</p></article>
+  </div>
+</section>
+
+<!-- WEEK -->
+<div class="dark">
+  <section class="wrap" id="week">
+    <p class="eyebrow rv">The itinerary</p>
+    <h2 class="rv">Built around your conference hours. Not on top of them.</h2>
+    <div class="itin rv">
+      <div class="itin-row remote"><div class="d"><b>Wk of Sep 21</b>remote</div><div class="what"><h3>Positioning Sprint</h3><p>The story investors repeat.</p></div></div>
+      <div class="itin-row remote"><div class="d"><b>Wk of Sep 28</b>remote</div><div class="what"><h3>Target Map</h3><p>20–30 named investors &amp; operators, matched to you.</p></div></div>
+      <div class="itin-row remote"><div class="d"><b>Wk of Oct 5</b>remote</div><div class="what"><h3>Game Plan</h3><p>Your week, booked before boarding.</p></div></div>
+      <div class="itin-row"><div class="d"><b>Sat Oct 10</b>19:00</div><div class="what"><h3>Welcome Dinner</h3><p>One table, assigned seats, guest of honor.</p></div></div>
+      <div class="itin-row"><div class="d"><b>Sun Oct 11</b>am<span class="tag tw">Tech Week</span></div><div class="what"><h3>Morning Walk</h3><p>Cohort + invited guests. Afternoon free.</p></div></div>
+      <div class="itin-row"><div class="d"><b>Mon Oct 12</b>08:00</div><div class="what"><h3>The Investor Room</h3><p>Live feedback from active check-writers.</p></div></div>
+      <div class="itin-row"><div class="d"><b>Tue Oct 13</b>18:30<span class="tag dis">Disrupt D1</span></div><div class="what"><h3>The Operator Room</h3><p>US go-to-market, from people who built it.</p></div></div>
+      <div class="itin-row"><div class="d"><b>Wed Oct 14</b>08:00<span class="tag dis">Disrupt D2</span></div><div class="what"><h3>The Founder Room</h3><p>Founders who raised US rounds as outsiders.</p></div></div>
+      <div class="itin-row"><div class="d"><b>Thu Oct 15</b>18:30<span class="tag dis">Disrupt D3</span></div><div class="what"><h3>Founder Showcase</h3><p>You host. We fill the room.</p></div></div>
+      <div class="itin-row"><div class="d"><b>Fri Oct 16</b>09:30</div><div class="what"><h3>Closing + 90-Day Plan</h3><p>The week becomes a written plan.</p></div></div>
+    </div>
+    <p class="itin-note rv"><b>~10 of your ~80 waking hours that week.</b> The other 70 are what we prepared you for. Tech Week runs Oct 5–11 · Disrupt Oct 13–15, Moscone West.</p>
+  </section>
+</div>
+
+<!-- ROOMS -->
+<section class="wrap" id="rooms">
+  <p class="eyebrow rv">Who's in the room</p>
+  <h2 class="rv">Named people. Not “top-tier investors.”</h2>
+  <div class="rooms">
+    <div class="room rv">
+      <span class="when">Mon 08:00</span>
+      <h3>The Investor Room</h3>
+      <p>Active check-writers, live on your positioning.</p>
+      <ul>
+        <li><b>Nitin Pachisia</b><span>Unshackled Ventures · 200+ immigrant founders backed</span></li>
+        <li><b>Alexander Soroka</b><span>Network VC · 100+ startups</span></li>
+        <li><b>Alexei Chemenda</b><span>$65M+ ARR founder · 200+ investments</span></li>
+        <li><b>Anton Vaisburd</b><span>datrics.ai (YC W21) · GP, SID VP</span></li>
+      </ul>
+    </div>
+    <div class="room rv">
+      <span class="when">Tue 18:30</span>
+      <h3>The Operator Room</h3>
+      <p>US go-to-market that survives contact.</p>
+      <ul>
+        <li><b>Jack Levin</b><span>CEO Nventify · ex-Google infrastructure</span></li>
+        <li><b>Andrey Akselrod</b><span>People.ai co-founder · 2× unicorn</span></li>
+        <li><b>Vlad Voskresensky</b><span>CEO Revenue Grid · $30M+ raised</span></li>
+        <li><b>Oleksandr Maksymets</b><span>Meta Superintelligence Labs</span></li>
+      </ul>
+    </div>
+    <div class="room rv">
+      <span class="when">Wed 08:00</span>
+      <h3>The Founder Room</h3>
+      <p>The playbook you're about to run.</p>
+      <ul>
+        <li><b>Dan Hnatkovskyy</b><span>NewHomesMate · $15M+ raised</span></li>
+        <li><b>Vasili Razhnou</b><span>MedVidi · $26M+ ARR</span></li>
+        <li><b>Dana Sydorenko</b><span>Forbes 30 Under 30 · $4M raised</span></li>
+        <li><b>Ruslan Okhrimovych</b><span>effie.ai · $4M+ ARR · Raisable alumni</span></li>
+      </ul>
+    </div>
+  </div>
+  <p class="rooms-note rv">Drawn from the Raisable mentor network — final rosters published to the cohort before you land. Behind them: 100+ VCs, $100M+ raised. <a href="https://raisable.vc">Meet the bench →</a></p>
+</section>
+
+<!-- GUARANTEE -->
+<div class="dark">
+  <section class="wrap" id="guarantee">
+    <p class="eyebrow rv">In writing</p>
+    <h2 class="rv">What we guarantee — and what we don't.</h2>
+    <div class="guar rv">
+      <div>
+        <h3 class="g">Guaranteed</h3>
+        <ul>
+          <li><b>Three rooms of ≤12</b> — investors &amp; operators outnumber founders, every name published before you land.</li>
+          <li><b>You present in every room.</b></li>
+          <li><b>A Showcase stage with an audience we fill.</b></li>
+          <li><b>Positioning + Target Map before your flight.</b></li>
+          <li><b>A written 90-day plan</b> with day-30 / day-90 check-ins.</li>
+          <li><b>Full refund until Kickoff.</b> Visa denial: refund or free deferral.</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="n">Not promised</h3>
+        <ul class="n-list">
+          <li><b>Funding.</b> Guaranteed investor outcomes at $3,500 means meetings with people who take every call.</li>
+          <li><b>Intro quotas.</b> We introduce where there's real fit — a manufactured number produces meetings nobody wanted.</li>
+          <li><b>A shortcut past the prep.</b> Skip it and you fly home with business cards.</li>
+        </ul>
+        <p class="sprint">Want a structured, sector-specific pipeline after the trip? <b>The 90-Day Sprint</b> — offered to cohort members only.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FIT -->
+<section class="wrap" id="fit">
+  <p class="eyebrow rv">Selection</p>
+  <h2 class="rv">We admit companies. Not credit cards.</h2>
+  <div class="fit">
+    <div class="rv">
+      <h3>For you if</h3>
+      <ul>
+        <li><b>Raising within 6 months</b> — venture-scale, live product</li>
+        <li><b>Trip booked</b> for Tech Week and/or Disrupt</li>
+        <li><b>No warm US network</b> — first or second SV trip</li>
+        <li><b>You'll do the prep</b> — three sessions, non-negotiable</li>
+      </ul>
+    </div>
+    <div class="rv">
+      <h3>Not for you if</h3>
+      <ul>
+        <li><b>Idea-stage</b> — every room will say “come back with traction”</li>
+        <li><b>Raise is 9+ months out</b> — intros decay</li>
+        <li><b>Expecting a term sheet for a ticket</b></li>
+        <li><b>Already warm in SV</b> — you'd get little here</li>
+      </ul>
+    </div>
+  </div>
+  <p class="fit-line rv">We'll run it with five great founders before we run it with eight average ones.</p>
+</section>
+
+<!-- MATH -->
+<section class="wrap" id="math" style="padding-top:0">
+  <p class="eyebrow rv">Founder math</p>
+  <h2 class="rv">The trip is already sunk. The outcome isn't.</h2>
+  <div class="math">
+    <table class="trip rv" aria-label="Trip cost breakdown">
+      <tr><td>Flights, international</td><td>$900–1,800</td></tr>
+      <tr><td>Hotel, 6 nights</td><td>$1,800–3,000</td></tr>
+      <tr><td>Conference passes</td><td>$1,000–2,000</td></tr>
+      <tr><td>A week of founder time</td><td>your scarcest asset</td></tr>
+      <tr class="sum"><td>Spent either way</td><td>$4,000–7,000+</td></tr>
+    </table>
+    <div class="math-point rv">
+      <span class="mono">The allocation question</span>
+      <p>One third on top of what's already committed decides whether it becomes an expense — or an investment. One advanced investor conversation repays this seat 100×.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section class="wrap" id="proof" style="padding-top:0">
+  <p class="eyebrow rv">Cohort 001</p>
+  <h2 class="rv">No testimonials yet. By design.</h2>
+  <p class="lead rv" style="margin-top:1.2rem">Founding cohort: $3,500 with founder-level attention — not $7,500 with a program manager. The network is already real:</p>
+  <div class="proof-stats rv">
+    <div><b>300+</b><span>entrepreneurs in the network</span></div>
+    <div><b>50+</b><span>events hosted</span></div>
+    <div><b>100+</b><span>VCs, syndicates to Tier 1</span></div>
+    <div><b>$100M+</b><span>raised across mentors</span></div>
+  </div>
+  <p class="proof-links rv">See it live: <a href="https://luma.com/raisable">Luma</a> · <a href="https://www.youtube.com/@RaisableFounders">YouTube</a> · <a href="https://raisable.vc">raisable.vc</a></p>
+</section>
+
+<!-- PRICING -->
+<section class="wrap" id="pricing" style="padding-top:0">
+  <p class="eyebrow rv">Pricing</p>
+  <h2 class="rv">One price. Everything included.</h2>
+  <div class="price-card rv">
+    <div class="price-main">
+      <div class="amount">$3,500 <small>/ founder seat</small></div>
+      <p class="sub">Flat. No tiers, no early-bird games — the founder next to you paid what you paid.</p>
+      <a class="btn" href="#apply">Apply for a seat <span class="ar">→</span></a>
+      <div class="price-terms">
+        <div><b>Co-founder Pass — $1,500</b>Full access. Max 3 per cohort; still 8 companies.</div>
+        <div><b>Pay like a company</b>Stripe or invoice. Two installments available.</div>
+        <div><b>Risk, reversed</b>Full refund until Kickoff (Sep 21). Visa denial: refund or deferral. Under 4 founders: cohort rolls, your choice of refund or rollover.</div>
+      </div>
+    </div>
+    <div class="price-incl">
+      <h3>Included</h3>
+      <ul>
+        <li>3 prep sessions + a 1:1 with the organizer</li>
+        <li>Positioning doc + named Target Map</li>
+        <li>Welcome Dinner with guest of honor</li>
+        <li>Investor, Operator &amp; Founder Rooms — named guests</li>
+        <li>Founder Showcase — your stage, our audience</li>
+        <li>Printed briefing book — every founder &amp; guest</li>
+        <li>Concierge line all week</li>
+        <li>Closing Session + written 90-day plan</li>
+        <li>Day-30 / day-90 follow-through</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY -->
+<div class="dark">
+  <section class="wrap" id="apply">
+    <p class="eyebrow rv">Admission</p>
+    <h2 class="rv">Three minutes to apply.<br>Both sides decide.</h2>
+    <ol class="steps">
+      <li class="rv"><b>Apply</b><p>Company, stage, raise timeline, trip status. No essays.</p></li>
+      <li class="rv"><b>Strategy call</b><p>30 min within 48h. You leave with a mini trip-audit either way — a free sample of the product.</p></li>
+      <li class="rv"><b>Decision</b><p>If we can't reach your target investors, we tell you not to join. Seat offers hold 48h.</p></li>
+    </ol>
+    <div class="apply-cta rv">
+      <!-- APPLY: swap href to the real application form -->
+      <a class="btn" href="https://raisable.vc">Start your application <span class="ar">→</span></a>
+      <span class="mono"><b>8 seats</b> · close Sep 18 · late = less product</span>
+    </div>
+  </section>
+</div>
+
+<!-- FAQ -->
+<section class="wrap" id="faq">
+  <p class="eyebrow rv">Questions founders actually ask</p>
+  <h2 class="rv">The honest FAQ.</h2>
+  <div class="faq rv">
+    <details>
+      <summary>Why would I send $3,500 to a brand I don't know?</summary>
+      <p>Don't — not before the call. The strategy session is free and useful either way; judge us there. Then check receipts: the mentor bench on raisable.vc, 50+ events on Luma. Full refund until Kickoff.</p>
+    </details>
+    <details>
+      <summary>Do I still need my own conference tickets?</summary>
+      <p>Yes. This wraps around Tech Week and Disrupt — it doesn't replace them. We help you pick what matters in the Game Plan session.</p>
+    </details>
+    <details>
+      <summary>Will it conflict with conference hours?</summary>
+      <p>No — rooms run at 08:00 and 18:30. About 10 of your ~80 waking hours that week are ours; the rest are yours, with a plan.</p>
+    </details>
+    <details>
+      <summary>What if my US visa is denied?</summary>
+      <p>Documented denial = full refund or free deferral, your choice. The three prep sessions run remotely regardless — the positioning work is yours either way.</p>
+    </details>
+    <details>
+      <summary>How strong will the other founders be?</summary>
+      <p>The bar is public: venture-scale, raising within 6 months, live product, interview required. One company per seat, no direct competitors. We'd rather run with 5 great founders than 8 average ones.</p>
+    </details>
+    <details>
+      <summary>Exactly how many investor intros do I get?</summary>
+      <p>No quota, on purpose — manufactured numbers produce meetings nobody wanted. Guaranteed instead: three named rooms where investors outnumber founders, and intros all week wherever there's real fit. Want a structured pipeline after? That's the 90-Day Sprint.</p>
+    </details>
+    <details>
+      <summary>Can my co-founder join?</summary>
+      <p>Yes — $1,500 flat, full access, capped at 3 per cohort so rooms stay small.</p>
+    </details>
+    <details>
+      <summary>What happens after the week?</summary>
+      <p>A written 90-day plan, witnessed commitments, check-ins at day 30 and 90. Cohort members can join the 90-Day Sprint — pitched once, at the close.</p>
+    </details>
+    <details>
+      <summary>How do I pay from Ukraine / India / Singapore?</summary>
+      <p>Stripe card payment or a proper company invoice from a named US entity. Two installments available. No wire-only checkout — that's what scams look like.</p>
+    </details>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span><a class="logo" href="https://raisable.vc" style="font-size:.92rem">Raisable</a></span>
+    <span>
+      <a href="https://raisable.vc">raisable.vc</a>
+      <a href="https://luma.com/raisable">Events</a>
+      <a href="https://www.youtube.com/@RaisableFounders">YouTube</a>
+      <a href="#apply">Apply</a>
+    </span>
+    <span>Silicon Valley ROI Track · October 2026 · San Francisco</span>
+  </div>
+</footer>
+
+<script>
+  document.documentElement.classList.add('js');
+  const io = new IntersectionObserver((es) => {
+    for (const e of es) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
