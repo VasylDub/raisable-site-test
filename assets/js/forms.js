@@ -10,8 +10,6 @@
   // before the relay is deployed.
   var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzjXFmkOy9jGCG8TuO1PCh7ZhMrq96sFLHlHHGtcJlFB1MTqhiGZIcXWTTzpiPZoXm0aA/exec';
   var FALLBACK_ENDPOINT = 'https://formspree.io/f/mrewovpk';
-  var CALENDAR_URL_CALL = 'https://calendar.app.google/sFcnmXxz7LxbKPodA';
-  var CALENDAR_URL_STRATEGY_500 = 'https://calendar.app.google/BeoJqfbJL3KaHH7V6';
 
   var modal = document.getElementById('apply-modal');
   if (!modal) return;
@@ -404,58 +402,44 @@
       else if ((d.us_plans || '') === 'Visiting in the next 1–3 months') priority = 'bootcamp';
     } else if (d.type === 'investor') {
       if (/Curated deal flow/.test(d.engagement || '')) priority = 'hot';
-    } else if (d.type === 'corporate') {
-      if (/Exploring a branded accelerator/.test(d.partner_goal || '')) priority = 'hot';
     }
     return { priority: priority, buyer_intent: buyer };
   }
 
   /* ---------- Success screens ---------- */
-  // Google's calendar.app.google short links send X-Frame-Options: DENY, so they
-  // can't be embedded in an <iframe>. Render a prominent button instead — reliable
-  // everywhere and better on mobile. (To embed inline later, swap CALENDAR_URL_*
-  // for a Google Appointment Scheduling embed URL ending in ?gv=true and restore
-  // the iframe.)
-  function calendarBlock(url) {
-    return '<a class="btn btn-primary success-cal-btn" href="' + url +
-      '" target="_blank" rel="noopener">Pick a time&nbsp;<span class="arr">→</span></a>' +
-      '<p class="success-cal-note">Opens our booking calendar in a new tab.</p>';
+  // No booking links: we reach out ourselves, and the follow-up is tracked in ClickUp.
+  function socialBlock() {
+    return '<div class="success-links success-social">' +
+      '<p class="social-note">Meanwhile — follow our social media and event calendar</p>' +
+      '<div class="social-row">' +
+      '<a href="https://www.youtube.com/@RaisableFounders" target="_blank" rel="noopener" aria-label="Raisable on YouTube"><img src="/assets/img/LG_YOUTUBE_ICON.svg" alt="YouTube"></a>' +
+      '<a href="https://www.linkedin.com/company/raisable-global/" target="_blank" rel="noopener" aria-label="Raisable on LinkedIn"><img src="/assets/img/LG_LINKEDIN_ICON.svg" alt="LinkedIn"></a>' +
+      '<a href="https://luma.com/raisable" target="_blank" rel="noopener" aria-label="Raisable event calendar on Luma"><img src="/assets/img/LG_LUMA_ICON.png" alt="Luma"></a>' +
+      '</div></div>';
   }
 
   function successHTML(type, tags, data) {
     if (type === 'founder') {
       if (tags.priority === 'hot' || tags.buyer_intent === 'hot') {
         return '<h3 class="success-h">You’re exactly <em>who we work with.</em></h3>' +
-          '<div class="success-body"><p>Let’s not wait — grab a time and let’s talk.</p></div>' +
-          calendarBlock(CALENDAR_URL_CALL) +
-          '<p class="success-secondary">Ready to dive straight in? ' +
-          '<a href="' + CALENDAR_URL_STRATEGY_500 + '" target="_blank" rel="noopener">Book a paid strategy session →</a></p>';
+          '<div class="success-body"><p>We’ll reach out within two business days to set up a call.</p></div>' +
+          socialBlock();
       }
       var bootcampLine = tags.priority === 'bootcamp'
         ? '<p class="success-note">You’re heading to the Bay soon — our in-person Bootcamp may be a fit. We’ll flag it when we reach out.</p>'
         : '';
       return '<h3 class="success-h">Application received.</h3>' + bootcampLine +
         '<div class="success-body"><p>We review every application personally. If there’s a fit, you’ll hear from us within a few days.</p></div>' +
-        '<div class="success-links success-social">' +
-        '<p class="social-note">Meanwhile — follow our social media and event calendar</p>' +
-        '<div class="social-row">' +
-        '<a href="https://www.youtube.com/@RaisableFounders" target="_blank" rel="noopener" aria-label="Raisable on YouTube"><img src="assets/img/LG_YOUTUBE_ICON.svg" alt="YouTube"></a>' +
-        '<a href="https://www.linkedin.com/company/raisable-global/" target="_blank" rel="noopener" aria-label="Raisable on LinkedIn"><img src="assets/img/LG_LINKEDIN_ICON.svg" alt="LinkedIn"></a>' +
-        '<a href="https://luma.com/raisable" target="_blank" rel="noopener" aria-label="Raisable event calendar on Luma"><img src="assets/img/LG_LUMA_ICON.png" alt="Luma"></a>' +
-        '</div></div>';
+        socialBlock();
     }
     if (type === 'investor') {
       return '<h3 class="success-h">Thanks — <em>let’s talk.</em></h3>' +
-        '<div class="success-body"><p>Pick a time that works for you.</p></div>' +
-        calendarBlock(CALENDAR_URL_CALL);
+        '<div class="success-body"><p>We’ll reach out to set up a short intro call.</p></div>' +
+        socialBlock();
     }
-    var aaas = /Exploring a branded accelerator/.test(data.partner_goal || '')
-      ? '<div class="success-links"><a href="https://accelerator.raisable.vc" target="_blank" rel="noopener">' +
-        'In the meantime — see how our Accelerator-as-a-Service works →</a></div>'
-      : '';
     return '<h3 class="success-h">Thanks — <em>let’s build.</em></h3>' +
-      '<div class="success-body"><p>Pick a time that works for you.</p></div>' +
-      calendarBlock(CALENDAR_URL_CALL) + aaas;
+      '<div class="success-body"><p>We’ll reach out within a few business days to find the right format together.</p></div>' +
+      socialBlock();
   }
 
   function showSuccess(type, tags, data) {

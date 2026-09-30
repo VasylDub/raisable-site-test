@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're in the room — Raisable Robotics</title>
+  <meta name="description" content="Founders, corporate teams, and investors at our robotics events: pick your next step in 30 seconds.">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://raisable.vc/robotics/go/">
+  <meta name="theme-color" content="#0A2621">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A2621'/%3E%3Ctext x='16' y='23' font-family='Arial,sans-serif' font-size='19' font-weight='700' fill='%2300BD97' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    // Short QR codes (?e=bs) expand into full UTMs before analytics loads,
+    // so GA and the forms both see the event and the placement.
+    (function () {
+      var SHORT = {
+        bs: ['sftw26-breakfast', 'slide'], bc: ['sftw26-breakfast', 'table-card'],
+        ps: ['sftw26-pitchnight', 'slide'], pc: ['sftw26-pitchnight', 'table-card']
+      };
+      var p = new URLSearchParams(location.search), e = p.get('e');
+      if (e && SHORT[e]) {
+        p.delete('e');
+        p.set('utm_source', 'event'); p.set('utm_medium', 'qr');
+        p.set('utm_campaign', SHORT[e][0]); p.set('utm_content', SHORT[e][1]);
+        history.replaceState(null, '', location.pathname + '?' + p.toString());
+      }
+    })();
+    window.GA_MEASUREMENT_ID = 'G-0SW6V2QF0W';
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { dataLayer.push(arguments); };
+    if (window.GA_MEASUREMENT_ID && /(^|\.)raisable\.vc$/.test(location.hostname)) {
+      var _ga = document.createElement('script');
+      _ga.async = true;
+      _ga.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
+      document.head.appendChild(_ga);
+      gtag('js', new Date());
+      gtag('config', window.GA_MEASUREMENT_ID, { content_group: 'robotics' });
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=r3">
+  <link rel="stylesheet" href="../assets/css/robotics.css?v=r3">
+</head>
+<body class="go-page">
+  <main class="go-wrap">
+    <div class="go-top">
+      <a class="nav-logo" href="../" aria-label="Raisable Robotics — home">
+        <img src="../assets/img/logo.png" alt="Raisable" width="122" height="28">
+        <span class="nav-tag">Robotics</span>
+      </a>
+    </div>
+
+    <p class="go-event" data-event-name>Raisable Robotics Series</p>
+    <h1>You're in <em>the room.</em></h1>
+    <p class="go-sub">It takes 30 seconds. We read every response personally and follow up with the right next step.</p>
+
+    <nav class="go-doors" aria-label="Choose who you are">
+      <a class="go-door" href="../#apply/founder" data-door="founder">
+        <span class="go-door-text"><strong>I'm a founder</strong><small>Apply for the 2027 Raisable Robotics Track or our next events</small></span>
+        <b aria-hidden="true">→</b>
+      </a>
+      <a class="go-door" href="../#apply/corporate" data-door="corporate">
+        <span class="go-door-text"><strong>I'm with a corporate / CVC</strong><small>Partner with us on upcoming events and the 2027 track</small></span>
+        <b aria-hidden="true">→</b>
+      </a>
+      <a class="go-door" href="../#apply/investor" data-door="investor">
+        <span class="go-door-text"><strong>I'm an investor</strong><small>Get our founder deal flow, matched to your thesis</small></span>
+        <b aria-hidden="true">→</b>
+      </a>
+    </nav>
+
+    <div class="go-foot">
+      <p>Follow the Raisable Robotics Series</p>
+      <div class="go-social">
+        <a href="https://www.linkedin.com/company/raisable-global/" target="_blank" rel="noopener"><img src="../assets/img/LG_LINKEDIN_ICON.svg" alt="">LinkedIn</a>
+        <a href="https://www.youtube.com/@RaisableFounders" target="_blank" rel="noopener"><img src="../assets/img/LG_YOUTUBE_ICON.svg" alt="">YouTube</a>
+        <a href="https://luma.com/raisable" target="_blank" rel="noopener"><img src="../assets/img/LG_LUMA_ICON.png" alt="">Upcoming events</a>
+      </div>
+      <p class="go-site">Or explore <a href="../" data-door="site">raisable.vc/robotics</a></p>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var q = location.search;
+      var params = new URLSearchParams(q);
+      var names = {
+        'sftw26-breakfast': 'SF Tech Week · Series A Founders & CVCs Breakfast',
+        'sftw26-pitchnight': 'SF Tech Week · Pitch Night @ Mission Robotics'
+      };
+      var campaign = params.get('utm_campaign');
+      var label = document.querySelector('[data-event-name]');
+      if (campaign && names[campaign]) label.textContent = names[campaign];
+      // carry UTMs into the landing so the form knows where the lead came from
+      document.querySelectorAll('[data-door]').forEach(function (a) {
+        var href = a.getAttribute('href');
+        var hash = href.indexOf('#') > -1 ? href.slice(href.indexOf('#')) : '';
+        var path = href.replace(hash, '');
+        a.setAttribute('href', path + q + hash);
+        a.addEventListener('click', function () {
+          if (window.gtag) gtag('event', 'go_door_click', { door: a.getAttribute('data-door'), track: 'robotics', event_campaign: campaign || '' });
+        });
+      });
+      if (window.gtag) gtag('event', 'go_view', { track: 'robotics', event_campaign: campaign || '' });
+    })();
+  </script>
+</body>
+</html>

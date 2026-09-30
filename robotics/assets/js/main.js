@@ -438,7 +438,7 @@
         '<div class="panel-head" hidden></div>' +
         '<p class="panel-bio"></p><div class="panel-foot">' +
         '<a class="panel-li" target="_blank" rel="noopener" aria-label="LinkedIn profile" hidden>' +
-        '<img src="/assets/img/LG_LINKEDIN_ICON.svg" alt="LinkedIn"></a>' +
+        '<img src="assets/img/LG_LINKEDIN_ICON.svg" alt="LinkedIn"></a>' +
         '<div class="panel-tags"></div></div>' +
         '</div>';
       grid.appendChild(panel);
