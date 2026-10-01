@@ -223,6 +223,7 @@
     .gw-door.is-playing video { opacity: 1; }
     .gw-door--global .gw-door-img, .gw-door--global video { object-position: 50% 30%; }
     .gw-door--robotics .gw-door-img { object-position: 60% 40%; }
+    .gw-door--robotics video { object-position: 50% 45%; }
     .gw-door-shade {
       position: absolute;
       inset: 0;
@@ -380,35 +381,13 @@
       <nav aria-label="Choose your Raisable">
         <ul class="gw-doors">
           <li>
-            <a class="gw-door gw-door--global" href="/global/" data-door="global">
-              <img class="gw-door-img" src="/assets/video/hero-poster.jpg" alt="" width="1280" height="720" fetchpriority="high">
-              <video muted loop playsinline preload="none" data-src="/assets/video/hero.mp4" aria-hidden="true"></video>
-              <span class="gw-door-shade"></span>
-              <span class="gw-door-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-              <span class="gw-door-body">
-                <span class="gw-door-kicker">01 · Global</span>
-                <span class="gw-door-title">Raisable Global</span>
-                <span class="gw-door-line">Silicon Valley's network, capital, and playbooks — for founders from anywhere.</span>
-                <span class="gw-door-more"><span>
-                  <span class="gw-door-for">Who it's for</span>
-                  <span class="gw-door-who">
-                    <span>Founders from around the world, building for the US market</span>
-                    <span>Investors looking for global deal flow</span>
-                    <span>Operators and mentors who give back</span>
-                  </span>
-                  <span class="gw-door-cta">Enter Raisable Global <span aria-hidden="true">→</span></span>
-                </span></span>
-              </span>
-            </a>
-          </li>
-          <li>
             <a class="gw-door gw-door--robotics" href="/robotics/" data-door="robotics">
               <img class="gw-door-img" src="/assets/img/door-robotics.jpg" alt="" width="1100" height="720" fetchpriority="high">
-              <video muted loop playsinline preload="none" data-src="/robotics/assets/video/robots.mp4" aria-hidden="true"></video>
+              <video muted loop playsinline preload="none" data-src="/assets/video/door-robotics.mp4" aria-hidden="true"></video>
               <span class="gw-door-shade"></span>
               <span class="gw-door-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
               <span class="gw-door-body">
-                <span class="gw-door-kicker">02 · Robotics</span>
+                <span class="gw-door-kicker">01 · Robotics</span>
                 <span class="gw-door-title">Raisable Robotics</span>
                 <span class="gw-door-line">Curated rooms for robotics and Physical AI.</span>
                 <span class="gw-door-more"><span>
@@ -419,6 +398,28 @@
                     <span>VCs investing in robotics</span>
                   </span>
                   <span class="gw-door-cta">Enter Raisable Robotics <span aria-hidden="true">→</span></span>
+                </span></span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="gw-door gw-door--global" href="/global/" data-door="global">
+              <img class="gw-door-img" src="/assets/video/hero-poster.jpg" alt="" width="1280" height="720" fetchpriority="high">
+              <video muted loop playsinline preload="none" data-src="/assets/video/door-global.mp4" aria-hidden="true"></video>
+              <span class="gw-door-shade"></span>
+              <span class="gw-door-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+              <span class="gw-door-body">
+                <span class="gw-door-kicker">02 · Global</span>
+                <span class="gw-door-title">Raisable Global</span>
+                <span class="gw-door-line">Silicon Valley's network, capital, and playbooks — for founders from anywhere.</span>
+                <span class="gw-door-more"><span>
+                  <span class="gw-door-for">Who it's for</span>
+                  <span class="gw-door-who">
+                    <span>Founders from around the world, building for the US market</span>
+                    <span>Investors looking for global deal flow</span>
+                    <span>Operators and mentors who give back</span>
+                  </span>
+                  <span class="gw-door-cta">Enter Raisable Global <span aria-hidden="true">→</span></span>
                 </span></span>
               </span>
             </a>
@@ -453,7 +454,6 @@
 
       var doors = document.querySelectorAll('.gw-door');
       var motionOk = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var hoverOk = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       var saveData = navigator.connection && navigator.connection.saveData;
 
       doors.forEach(function (door) {
@@ -462,22 +462,38 @@
         door.addEventListener('click', function () {
           if (window.gtag) gtag('event', 'gateway_click', { door: door.getAttribute('data-door'), transport_type: 'beacon' });
         });
-
-        // Footage plays only while a pointer is on the door (desktop, motion allowed, no data saver)
-        var video = door.querySelector('video');
-        if (!video || !hoverOk || !motionOk || saveData) return;
-        var start = function () {
-          if (!video.getAttribute('src')) video.src = video.getAttribute('data-src');
-          var p = video.play();
-          if (p && p.then) p.then(function () { door.classList.add('is-playing'); }).catch(function () {});
-          else door.classList.add('is-playing');
-        };
-        var stop = function () { video.pause(); door.classList.remove('is-playing'); };
-        door.addEventListener('mouseenter', start);
-        door.addEventListener('mouseleave', stop);
-        door.addEventListener('focus', start);
-        door.addEventListener('blur', stop);
       });
+
+      // Ambient footage: each door plays its clip on its own once it is on screen (any device,
+      // phones included), unless the visitor asked for reduced motion or data saving. The clip
+      // fades in only when it is actually playing; if it can't play, the photo simply stays.
+      if (motionOk && !saveData) {
+        var startVideo = function (door) {
+          var video = door.querySelector('video');
+          if (!video || video.getAttribute('src')) return;
+          video.muted = true;
+          video.addEventListener('playing', function () { door.classList.add('is-playing'); });
+          video.src = video.getAttribute('data-src');
+          var p = video.play();
+          if (p && p.catch) p.catch(function () {});
+        };
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) { if (e.isIntersecting) { startVideo(e.target); io.unobserve(e.target); } });
+          }, { rootMargin: '200px 0px' });
+          doors.forEach(function (d) { io.observe(d); });
+        } else {
+          doors.forEach(startVideo);
+        }
+        // Browsers pause muted video in background tabs; pick it up again when the tab is back.
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState !== 'visible') return;
+          doors.forEach(function (d) {
+            var v = d.querySelector('video');
+            if (v && v.getAttribute('src') && v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+          });
+        });
+      }
     })();
   </script>
 </body>
