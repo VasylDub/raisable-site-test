@@ -35,7 +35,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="/assets/video/hero-poster.jpg">
   <link rel="preload" as="image" href="/assets/img/door-robotics.jpg">
-  <!-- Google Analytics (GA4) — the raisable.vc property; production host only -->
+  <!-- Google Analytics (GA4) — the raisable.vc property (544857600); production host only.
+       ?ga_debug=1 (kept for the tab session) sends hits to DebugView and marks them internal traffic. -->
   <script>
     window.GA_MEASUREMENT_ID = 'G-0SW6V2QF0W';
     window.dataLayer = window.dataLayer || [];
@@ -45,8 +46,14 @@
       _ga.async = true;
       _ga.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
       document.head.appendChild(_ga);
+      var _gaDebug = false;
+      try {
+        _gaDebug = /[?&]ga_debug=1(&|$)/.test(location.search) || sessionStorage.getItem('ga_debug') === '1';
+        if (_gaDebug) sessionStorage.setItem('ga_debug', '1');
+      } catch (e) {}
       gtag('js', new Date());
-      gtag('config', window.GA_MEASUREMENT_ID, { content_group: 'gateway' });
+      gtag('config', window.GA_MEASUREMENT_ID, Object.assign({ content_group: 'gateway' },
+        _gaDebug ? { debug_mode: true, traffic_type: 'internal' } : {}));
     }
   </script>
   <script type="application/ld+json">

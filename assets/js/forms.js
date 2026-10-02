@@ -20,9 +20,11 @@
 
   /* ---------- Analytics stub ---------- */
   function track(event, data) {
-    var payload = Object.assign({ event: event }, data || {});
-    if (window.dataLayer) { window.dataLayer.push(payload); }
-    if (window.gtag) { window.gtag('event', event, data || {}); }
+    var params = Object.assign({ track: 'global' }, data || {});
+    var payload = Object.assign({ event: event }, params);
+    // gtag only; pushing the raw payload as well could double-count if a tag manager ever reads dataLayer
+    if (window.gtag) { window.gtag('event', event, params); }
+    else if (window.dataLayer) { window.dataLayer.push(payload); }
     else if (window.console && console.debug) { console.debug('[analytics]', payload); }
   }
 
@@ -459,7 +461,7 @@
     var nextBtn = founderForm.querySelector('[data-step-next]');
     var submitBtn = founderForm.querySelector('.btn-submit');
 
-    function renderStep() {
+    function renderStep(silent) {
       fsteps.forEach(function (fs) {
         fs.hidden = parseInt(fs.getAttribute('data-fstep'), 10) !== current;
       });
@@ -469,6 +471,7 @@
       nextBtn.hidden = current === 4;
       submitBtn.hidden = current !== 4;
       modal.scrollTop = 0;
+      if (silent) return; // the first render on page load is not a step the visitor took
       track('form_step', { type: 'founder', step: current });
       track('form_step_' + current, { type: 'founder' });
     }
@@ -514,7 +517,7 @@
       if (current < 4) { e.preventDefault(); goNext(); }
     });
 
-    renderStep();
+    renderStep(true);
   }
 
   /* ---------- Submit (all forms) ---------- */
@@ -551,6 +554,7 @@
       post(data).then(function (res) {
         if (!res.ok) throw new Error('http ' + res.status);
         track('form_submit', { type: type, priority: tags.priority, buyer_intent: tags.buyer_intent });
+        track('generate_lead', { type: type, priority: tags.priority, buyer_intent: tags.buyer_intent }); // GA4 key event
         try {
           sessionStorage.removeItem(storageKey(form));
           sessionStorage.removeItem('rsbl_submission_id');

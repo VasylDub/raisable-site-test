@@ -12,12 +12,13 @@
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function pushEvent(payload) {
-    if (window.dataLayer) { window.dataLayer.push(payload); }
+    // gtag only; pushing the raw payload as well could double-count if a tag manager ever reads dataLayer
     if (window.gtag) {
       var params = {};
       Object.keys(payload).forEach(function (k) { if (k !== 'event') params[k] = payload[k]; });
       window.gtag('event', payload.event || 'event', params);
-    } else if (window.console && console.debug) { console.debug('[analytics]', payload); }
+    } else if (window.dataLayer) { window.dataLayer.push(payload); }
+    else if (window.console && console.debug) { console.debug('[analytics]', payload); }
   }
 
   /* ---------- Nav: solid on scroll + mobile menu ---------- */

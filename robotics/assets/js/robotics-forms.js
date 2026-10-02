@@ -502,6 +502,7 @@
     post(data).then(function (res) {
       if (res && res.ok === false) throw new Error('bad status');
       track('form_submit', { type: type, priority: data.priority, event_name: data.event || '' });
+      track('generate_lead', { type: type, priority: data.priority, event_name: data.event || '' }); // GA4 key event
       try {
         sessionStorage.removeItem(storageKey(form));
         sessionStorage.removeItem('rsbl_rb_submission_id'); // next submission gets its own id
@@ -541,7 +542,7 @@
     var nextBtn = founderForm.querySelector('[data-step-next]');
     var submitBtn = founderForm.querySelector('.btn-submit');
 
-    var renderStep = function () {
+    var renderStep = function (silent) {
       fsteps.forEach(function (fs) { fs.hidden = parseInt(fs.getAttribute('data-fstep'), 10) !== current; });
       progressEl.textContent = current;
       if (barEl) barEl.style.transform = 'scaleX(' + (current / total) + ')';
@@ -549,6 +550,7 @@
       nextBtn.hidden = current === total;
       submitBtn.hidden = current !== total;
       modal.scrollTop = 0;
+      if (silent) return; // the first render on page load is not a step the visitor took
       track('form_step', { type: 'founder', step: current });
     };
 
@@ -572,6 +574,6 @@
       current = Math.max(1, current - 1);
       renderStep();
     });
-    renderStep();
+    renderStep(true);
   }
 })();
