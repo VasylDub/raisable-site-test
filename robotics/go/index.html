@@ -51,6 +51,18 @@
       gtag('config', window.GA_MEASUREMENT_ID, Object.assign({ content_group: 'robotics' },
         _gaDebug ? { debug_mode: true, traffic_type: 'internal' } : {}));
     }
+    // A click that leaves the page is reported by the next page: hits still queued in gtag
+    // when a page unloads get lost (seen in testing). rsblTrackOnNextPage(name, params, clickEvent)
+    window.rsblTrackOnNextPage = function (name, params, e) {
+      if (e && (e.metaKey || e.ctrlKey || e.shiftKey)) { gtag('event', name, params); return; } // new tab: this page stays
+      try { sessionStorage.setItem('rsbl_ga_next', JSON.stringify({ name: name, params: params, t: Date.now() })); }
+      catch (err) { gtag('event', name, params); }
+    };
+    try {
+      var _gaNext = JSON.parse(sessionStorage.getItem('rsbl_ga_next') || 'null');
+      sessionStorage.removeItem('rsbl_ga_next');
+      if (_gaNext && Date.now() - _gaNext.t < 60000) gtag('event', _gaNext.name, _gaNext.params);
+    } catch (e) {}
   </script>
 </head>
 <body class="go-page">
@@ -109,8 +121,8 @@
         var hash = href.indexOf('#') > -1 ? href.slice(href.indexOf('#')) : '';
         var path = href.replace(hash, '');
         a.setAttribute('href', path + q + hash);
-        a.addEventListener('click', function () {
-          if (window.gtag) gtag('event', 'go_door_click', { door: a.getAttribute('data-door'), track: 'robotics', event_campaign: campaign || '' });
+        a.addEventListener('click', function (e) {
+          rsblTrackOnNextPage('go_door_click', { door: a.getAttribute('data-door'), track: 'robotics', event_campaign: campaign || '' }, e);
         });
       });
       if (window.gtag) gtag('event', 'go_view', { track: 'robotics', event_campaign: campaign || '' });

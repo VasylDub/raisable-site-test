@@ -46,6 +46,18 @@
       gtag('config', window.GA_MEASUREMENT_ID, Object.assign({ content_group: 'global' },
         _gaDebug ? { debug_mode: true, traffic_type: 'internal' } : {}));
     }
+    // A click that leaves the page is reported by the next page: hits still queued in gtag
+    // when a page unloads get lost (seen in testing). rsblTrackOnNextPage(name, params, clickEvent)
+    window.rsblTrackOnNextPage = function (name, params, e) {
+      if (e && (e.metaKey || e.ctrlKey || e.shiftKey)) { gtag('event', name, params); return; } // new tab: this page stays
+      try { sessionStorage.setItem('rsbl_ga_next', JSON.stringify({ name: name, params: params, t: Date.now() })); }
+      catch (err) { gtag('event', name, params); }
+    };
+    try {
+      var _gaNext = JSON.parse(sessionStorage.getItem('rsbl_ga_next') || 'null');
+      sessionStorage.removeItem('rsbl_ga_next');
+      if (_gaNext && Date.now() - _gaNext.t < 60000) gtag('event', _gaNext.name, _gaNext.params);
+    } catch (e) {}
   </script>
   <script type="application/ld+json">
   {
