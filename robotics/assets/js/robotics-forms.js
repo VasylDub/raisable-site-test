@@ -502,7 +502,7 @@
     post(data).then(function (res) {
       if (res && res.ok === false) throw new Error('bad status');
       track('form_submit', { type: type, priority: data.priority, event_campaign: fromEvent ? (utm.utm_campaign || '') : '' });
-      track('generate_lead', { type: type, priority: data.priority, event_campaign: fromEvent ? (utm.utm_campaign || '') : '' }); // GA4 key event
+      track('generate_lead', { type: type, priority: data.priority, event_campaign: fromEvent ? (utm.utm_campaign || '') : '' }); // GA4 recommended lead event ("Generate leads" reports); the key event is form_submit
       try {
         sessionStorage.removeItem(storageKey(form));
         sessionStorage.removeItem('rsbl_rb_submission_id'); // next submission gets its own id

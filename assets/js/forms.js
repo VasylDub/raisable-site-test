@@ -554,7 +554,7 @@
       post(data).then(function (res) {
         if (!res.ok) throw new Error('http ' + res.status);
         track('form_submit', { type: type, priority: tags.priority, buyer_intent: tags.buyer_intent });
-        track('generate_lead', { type: type, priority: tags.priority, buyer_intent: tags.buyer_intent }); // GA4 key event
+        track('generate_lead', { type: type, priority: tags.priority, buyer_intent: tags.buyer_intent }); // GA4 recommended lead event ("Generate leads" reports); the key event is form_submit
         try {
           sessionStorage.removeItem(storageKey(form));
           sessionStorage.removeItem('rsbl_submission_id');
