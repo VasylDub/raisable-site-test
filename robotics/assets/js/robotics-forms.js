@@ -60,7 +60,8 @@
   } catch (e) {}
   var EVENT_NAMES = {
     'sftw26-breakfast': 'SF Tech Week — Series A Founders & CVCs Breakfast (Oct 5)',
-    'sftw26-pitchnight': 'SF Tech Week — VC <> Founders Pitch Night (Oct 8)'
+    'sftw26-pitchnight': 'SF Tech Week — VC <> Founders Pitch Night (Oct 8)',
+    'tee': 'Raisable team T-shirt'
   };
   var fromEvent = utm.utm_medium === 'qr' || utm.utm_source === 'event';
   var eventName = EVENT_NAMES[utm.utm_campaign] || (fromEvent ? (utm.utm_campaign || 'Raisable event') : '');
