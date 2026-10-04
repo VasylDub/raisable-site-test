@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Raisable Workbench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: paper ground, white cards, one teal accent borrowed from raisable.vc; mono for data, Alexandria for headings. */
+:root {
+  --bg: #F8F9F6;
+  --surface: #FFFFFF;
+  --surface-2: #E7F5EE;
+  --fg: #0A2621;
+  --fg-soft: #4E6058;
+  --muted: #6B7F77;
+  --line: #E0E5DF;
+  --grid: #ECEFEA;
+  --accent: #00BD97;
+  --accent-ink: #1C594E;
+  --yellow: #FFC700;
+  --s1: #0E8C72;
+  --s2: #3F6DB3;
+  --s3: #C9574A;
+  --quiet: #B9C4BE;
+  --warn: #B38700;
+  --warn-text: #8A6D00;
+  --pill-active-bg: #1C594E;
+  --pill-active-fg: #F8F9F6;
+  --tile: 0, 189, 151;
+  --on-series: #FFFFFF;
+  --shadow: 0 1px 2px rgba(10,38,33,.05), 0 10px 28px -18px rgba(10,38,33,.28);
+  --font-display: "Alexandria", "Avenir Next", system-ui, sans-serif;
+  --font-body: "Inter", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
+  --ease: cubic-bezier(.23, 1, .32, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #07201B; --surface: #0D2B25; --surface-2: #123A32; --fg: #F8F9F6; --fg-soft: #A9B8B1; --muted: #7E948B;
+    --line: rgba(248,249,246,.12); --grid: rgba(248,249,246,.07); --accent: #00BD97; --accent-ink: #2ED3AB; --yellow: #FFC700;
+    --s1: #20AC89; --s2: #5F8BD4; --s3: #CF6657; --quiet: #3E5A52; --warn: #E3B21B; --warn-text: #E3B21B;
+    --pill-active-bg: #2ED3AB; --pill-active-fg: #07201B; --on-series: #07201B;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 10px 28px -18px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #07201B; --surface: #0D2B25; --surface-2: #123A32; --fg: #F8F9F6; --fg-soft: #A9B8B1; --muted: #7E948B;
+  --line: rgba(248,249,246,.12); --grid: rgba(248,249,246,.07); --accent: #00BD97; --accent-ink: #2ED3AB; --yellow: #FFC700;
+  --s1: #20AC89; --s2: #5F8BD4; --s3: #CF6657; --quiet: #3E5A52; --warn: #E3B21B; --warn-text: #E3B21B;
+  --pill-active-bg: #2ED3AB; --pill-active-fg: #07201B;
+  --shadow: 0 1px 2px rgba(0,0,0,.35), 0 10px 28px -18px rgba(0,0,0,.7);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { height: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+a { color: var(--accent-ink); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 12px; }
+.muted { color: var(--muted); }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); background: var(--bg); }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+  -webkit-mask-image: radial-gradient(110% 120% at 100% 0%, #000 25%, transparent 72%);
+  mask-image: radial-gradient(110% 120% at 100% 0%, #000 25%, transparent 72%); }
+.hero-inner { position: relative; padding-block: 52px 36px; display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); }
+.hero h1 { font-size: clamp(30px, 4.6vw, 48px); line-height: 1.08; max-width: 14ch; }
+.hero .lede { max-width: 62ch; color: var(--fg-soft); margin: 14px 0 0; font-size: 16px; }
+.sources { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0; padding: 0; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.sources div { display: flex; gap: 8px; align-items: baseline; }
+.sources dt { color: var(--fg-soft); }
+.sources dd { margin: 0; }
+.sources dt::after { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-left: 8px; vertical-align: middle; }
+
+/* ---------- Sections ---------- */
+main { padding-block: 28px 56px; display: grid; gap: 40px; }
+section { display: grid; gap: 16px; }
+.sec-head { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; justify-content: space-between; }
+.sec-head h2 { font-size: 22px; }
+.sec-head p { margin: 0; color: var(--fg-soft); font-size: 14px; max-width: 70ch; }
+
+/* ---------- Reveal animation ---------- */
+[data-anim] .reveal { opacity: 0; transform: translateY(10px); transition: opacity .55s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--i, 0) * 55ms); }
+[data-anim].in .reveal { opacity: 1; transform: none; }
+.pop { transition: transform .5s var(--ease); }
+[data-anim] .pop { transform: scale(0); }
+[data-anim].in .pop { transform: scale(1); }
+
+/* ---------- KPI tiles ---------- */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.tile .label { font-size: 13px; color: var(--fg-soft); }
+.tile .value { font-size: 36px; font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; }
+.tile .value small { font-size: 16px; font-weight: 500; color: var(--muted); margin-left: 4px; letter-spacing: 0; }
+.tile .sub { font-size: 13px; color: var(--muted); }
+.tile .sub b { color: var(--fg-soft); font-weight: 500; }
+.tile .spark { margin-top: 6px; height: 44px; width: 100%; position: relative; }
+.spark-dot { position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--s1); box-shadow: 0 0 0 2px var(--surface); }
+.tile .spark svg { width: 100%; height: 44px; display: block; overflow: visible; }
+.meter { margin-top: 8px; height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.meter i { display: block; height: 100%; width: var(--w, 0%); background: var(--s1); border-radius: 4px; transform-origin: left; transform: scaleX(0); transition: transform 1s var(--ease) .3s; }
+[data-anim].in .meter i, .meter.static i { transform: scaleX(1); }
+.spark path.line { fill: none; stroke: var(--s1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.spark path.area { fill: var(--s1); opacity: .1; }
+.spark circle { fill: var(--s1); stroke: var(--surface); stroke-width: 2; }
+[data-anim] .spark path.line { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); transition: stroke-dashoffset 1.2s var(--ease) .25s; }
+[data-anim].in .spark path.line { stroke-dashoffset: 0; }
+
+/* ---------- Filters ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: transparent; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; color: var(--fg-soft); cursor: pointer; transition: background .25s var(--ease), color .25s var(--ease); }
+.seg button:hover { background: var(--surface-2); }
+.seg button[aria-pressed="true"] { background: var(--pill-active-bg); color: var(--pill-active-fg); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 12px; color: var(--fg-soft); }
+.legend .k { display: inline-flex; align-items: center; gap: 6px; }
+.legend .sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.legend .sw.round { border-radius: 50%; }
+.legend .sw.ln { width: 14px; height: 2px; border-radius: 1px; }
+
+/* ---------- Status pills & chips ---------- */
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; line-height: 1; padding: 5px 9px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.active { background: var(--pill-active-bg); color: var(--pill-active-fg); }
+.pill.active::before { box-shadow: 0 0 0 0 rgba(var(--tile), .6); animation: pulse 2.2s ease-out infinite; }
+.pill.blocked { color: var(--warn-text); border-color: var(--warn); }
+.pill.blocked::before { content: "!"; width: 12px; height: 12px; background: var(--warn); color: #fff; font-size: 9px; font-weight: 700; display: inline-grid; place-items: center; }
+.pill.recent { color: var(--accent-ink); border-color: var(--accent-ink); }
+.pill.quiet { color: var(--muted); border-color: var(--line); }
+.pill.quiet::before { background: transparent; border: 1.5px solid currentColor; width: 6px; height: 6px; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(var(--tile), .55); } 100% { box-shadow: 0 0 0 9px rgba(var(--tile), 0); } }
+.chip { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.chip svg { width: 12px; height: 12px; }
+.unavail { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--fg-soft); padding: 4px 8px; border-radius: 6px; border: 1px dashed var(--muted);
+  background: repeating-linear-gradient(135deg, transparent 0 5px, var(--grid) 5px 7px); cursor: help; }
+.unavail::before { content: "—"; color: var(--muted); }
+
+/* ---------- Project cards ---------- */
+.groups { display: grid; gap: 26px; }
+.group-head { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+.group-head::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.grid { display: grid; gap: 16px; }
+.grid.repos { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+.grid.sessions { grid-template-columns: repeat(auto-fill, minmax(min(430px, 100%), 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease); }
+[data-anim].in .card.reveal:hover, .card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: transparent; }
+.card .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.card h3 { font-size: 18px; line-height: 1.25; }
+.card .sub { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 3px; overflow-wrap: anywhere; }
+.card p { margin: 0; font-size: 14px; color: var(--fg-soft); }
+.card .note { font-size: 13px; color: var(--warn-text); background: color-mix(in srgb, var(--warn) 10%, transparent); border-radius: 8px; padding: 8px 10px; }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; margin: 0; font-size: 12px; }
+.facts div { min-width: 0; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; font-family: var(--font-mono); color: var(--fg); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.tokens { margin-top: auto; border-top: 1px solid var(--line); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tokens .tl { font-size: 12px; color: var(--muted); }
+.tokens .tv { font-family: var(--font-mono); font-size: 20px; font-weight: 500; color: var(--fg); }
+.tokens .tv small { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 6px; }
+.ctx { display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+.ctx .row { display: flex; justify-content: space-between; gap: 8px; }
+.ctx .row b { font-family: var(--font-mono); font-weight: 500; color: var(--fg); }
+.links { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; }
+.links a::after { content: " ↗"; font-size: 11px; }
+
+/* ---------- Chart cards ---------- */
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; gap: 14px; min-width: 0; align-content: start; }
+.chart .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.chart h3 { font-size: 16px; }
+.chart .cap { margin: 4px 0 0; font-size: 13px; color: var(--fg-soft); max-width: 60ch; }
+.tbtn { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 4px 10px; font-size: 12px; color: var(--fg-soft); cursor: pointer; white-space: nowrap; transition: background .2s; }
+.tbtn:hover { background: var(--surface-2); }
+.tbtn[aria-pressed="true"] { background: var(--pill-active-bg); color: var(--pill-active-fg); border-color: transparent; }
+.viz svg { display: block; width: 100%; overflow: visible; }
+.viz text { font-family: var(--font-mono); font-size: 11px; fill: var(--muted); }
+.viz text.lab { fill: var(--fg); font-weight: 500; }
+.viz .gridline { stroke: var(--grid); stroke-width: 1; }
+.viz .baseline { stroke: var(--line); stroke-width: 1; }
+.viz .bar { fill: var(--s1); transform-box: fill-box; transform-origin: bottom; transition: transform .8s var(--ease), fill .2s; transition-delay: calc(var(--i, 0) * 22ms); }
+.viz .bar.dim { fill: var(--quiet); }
+.viz .bar.hot { fill: var(--accent-ink); }
+.viz .bar.dim.hot { fill: var(--muted); }
+.viz .hit { fill: transparent; cursor: default; }
+[data-anim] .viz.pre .bar { transform: scaleY(0); }
+.insight { font-size: 13px; color: var(--fg-soft); border-top: 1px solid var(--line); padding-top: 12px; margin: 0; }
+.insight b { color: var(--fg); font-weight: 500; }
+table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.data th, table.data td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.data th { font-weight: 500; color: var(--fg-soft); font-size: 12px; }
+table.data td.num, table.data th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.tscroll { overflow-x: auto; }
+
+/* ---------- Timeline ---------- */
+.tl-wrap { --lab: 250px; display: grid; gap: 0; position: relative; }
+.tl-axis, .tl-row { display: grid; grid-template-columns: var(--lab) minmax(0, 1fr); align-items: center; }
+.tl-axis { height: 26px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.tl-axis .track { position: relative; height: 100%; }
+.tl-axis .tick { position: absolute; top: 4px; transform: translateX(-50%); white-space: nowrap; }
+.tl-axis .tick.first { transform: none; }
+.tl-row { height: 34px; border-top: 1px solid var(--grid); }
+.tl-row .name { font-size: 13px; padding-right: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.tl-row .name .g { flex: none; width: 8px; height: 8px; border-radius: 2px; background: var(--muted); opacity: .6; }
+.tl-row .name .g.round { border-radius: 50%; }
+.tl-row .track { position: relative; height: 100%; }
+.tl-grid { position: absolute; top: 26px; bottom: 0; left: var(--lab); right: 0; pointer-events: none; }
+.tl-grid i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--grid); }
+.tl-grid i.today { background: var(--yellow); width: 2px; }
+.mk { position: absolute; top: 50%; cursor: default; }
+.mk.sq { width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 2px; background: var(--s1); box-shadow: 0 0 0 2px var(--surface); }
+.mk.dot { width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--s1); box-shadow: 0 0 0 2px var(--surface); }
+.mk.span { height: 6px; margin-top: -3px; border-radius: 3px; background: var(--s1); opacity: .35; transform-origin: left; transition: transform .8s var(--ease); }
+.mk.hit { height: 100%; top: 0; width: 24px; margin-left: -12px; }
+[data-anim] .tl-wrap.pre .mk.span { transform: scaleX(0); }
+[data-anim] .tl-wrap.pre .mk.sq, [data-anim] .tl-wrap.pre .mk.dot { transform: scale(0); }
+.mk.sq, .mk.dot { transition: transform .5s var(--ease); transition-delay: var(--d, 0s); }
+@media (max-width: 900px) { .tl-wrap { --lab: 170px; } }
+@media (max-width: 640px) { .tl-wrap { --lab: 120px; } .tl-row .name { font-size: 12px; } }
+
+/* ---------- Composition ---------- */
+.stack { display: flex; gap: 2px; height: 26px; border-radius: 6px; overflow: hidden; background: var(--surface); }
+.stack i { display: block; height: 100%; min-width: 2px; position: relative; transform-origin: left; transition: transform .9s var(--ease); font-family: var(--font-mono); font-size: 11px; color: #fff; line-height: 26px; padding-left: 8px; white-space: nowrap; overflow: visible; color: var(--on-series); }
+.stack i span { position: relative; }
+.stack i:first-child { border-radius: 6px 0 0 6px; }
+.stack i:last-child { border-radius: 0 6px 6px 0; }
+[data-anim] .stack.pre i { transform: scaleX(0); }
+.hbars { display: grid; gap: 8px; }
+.hbar { display: grid; grid-template-columns: 140px minmax(0, 1fr) 56px; gap: 10px; align-items: center; font-size: 13px; }
+.hbar .n { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--fg-soft); }
+.hbar .t { height: 14px; position: relative; }
+.hbar .t i { position: absolute; left: 0; top: 0; bottom: 0; width: var(--w); background: var(--s1); border-radius: 0 4px 4px 0; transform-origin: left; transition: transform .8s var(--ease); transition-delay: calc(var(--i, 0) * 50ms); }
+.hbar .v { font-family: var(--font-mono); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+[data-anim] .hbars.pre .hbar .t i { transform: scaleX(0); }
+@media (max-width: 420px) { .hbar { grid-template-columns: 96px minmax(0, 1fr) 50px; } }
+.row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 1000px) { .row3 { grid-template-columns: 1fr; } }
+.row2 { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; }
+@media (max-width: 860px) { .row2 { grid-template-columns: 1fr; } }
+
+/* ---------- Tokens ---------- */
+.cov { display: grid; gap: 10px; }
+.cov .big { font-size: 44px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+.cov .big small { font-size: 16px; color: var(--muted); font-weight: 500; letter-spacing: 0; margin-left: 6px; }
+.why { margin: 0; padding-left: 18px; font-size: 13px; color: var(--fg-soft); display: grid; gap: 6px; }
+.why b { color: var(--fg); font-weight: 500; }
+.tok-hero { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.tok-hero .n { font-family: var(--font-mono); font-size: 34px; font-weight: 500; letter-spacing: -0.01em; }
+.tok-hero .d { font-size: 13px; color: var(--muted); }
+.swl { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--fg-soft); }
+.swl .k { display: inline-flex; align-items: center; gap: 6px; }
+.swl .k i { width: 10px; height: 10px; border-radius: 3px; }
+
+/* ---------- Tooltip ---------- */
+.tip { position: fixed; z-index: 50; pointer-events: none; background: var(--surface); color: var(--fg); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.4; max-width: 260px; opacity: 0; transform: translateY(4px); transition: opacity .15s, transform .15s; }
+.tip.show { opacity: 1; transform: none; }
+.tip b { font-family: var(--font-mono); font-weight: 500; font-size: 13px; display: block; }
+.tip span { color: var(--fg-soft); }
+
+footer { border-top: 1px solid var(--line); padding-block: 24px 40px; font-size: 13px; color: var(--muted); }
+footer p { margin: 0 0 6px; max-width: 80ch; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-anim] .reveal, [data-anim] .pop, [data-anim] .viz.pre .bar, [data-anim] .tl-wrap.pre .mk.span, [data-anim] .tl-wrap.pre .mk.sq, [data-anim] .tl-wrap.pre .mk.dot, [data-anim] .stack.pre i, [data-anim] .hbars.pre .hbar .t i, .meter i { opacity: 1; transform: none; transition: none; }
+  [data-anim] .spark path.line { stroke-dasharray: none; stroke-dashoffset: 0; transition: none; }
+  .pill.active::before { animation: none; }
+  .card, .card:hover { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <canvas id="mosaic" aria-hidden="true"></canvas>
+  <div class="wrap hero-inner">
+    <div>
+      <p class="eyebrow">Raisable · project dashboard</p>
+      <h1>Everything on the bench right now</h1>
+      <p class="lede">Six repositories and four Claude Code workstreams, read from your GitHub account, your session history and the raisable.vc git log on 4 October 2026. Token counts appear where real data exists. Everywhere else they are marked unavailable rather than estimated.</p>
+    </div>
+    <dl class="sources" id="sources"></dl>
+  </div>
+</header>
+
+<main class="wrap">
+  <section aria-label="Headline numbers">
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section aria-labelledby="h-portfolio">
+    <div class="sec-head">
+      <h2 id="h-portfolio">Portfolio</h2>
+      <p>Status follows the last push or last turn: <b>Active</b> within 14 days, <b>Recent</b> within 60, <b>Quiet</b> beyond that. A session that stopped to ask you something is <b>Needs input</b>.</p>
+    </div>
+    <div class="filters">
+      <div class="seg" role="group" aria-label="Filter by kind" id="seg">
+        <button type="button" data-kind="all" aria-pressed="true">All</button>
+        <button type="button" data-kind="repo" aria-pressed="false">Repositories</button>
+        <button type="button" data-kind="session" aria-pressed="false">Claude sessions</button>
+      </div>
+      <div class="legend" id="status-legend"></div>
+    </div>
+    <div class="groups" id="cards"></div>
+
+    <article class="chart" id="timeline-card">
+      <div class="head">
+        <div>
+          <h3>Where the time went</h3>
+          <p class="cap">One row per project, April to October 2026. Squares are commit days or the last push; dots and bars are Claude sessions from first message to last.</p>
+        </div>
+        <button type="button" class="tbtn" aria-pressed="false" data-toggle="timeline">Table</button>
+      </div>
+      <div class="legend">
+        <span class="k"><i class="sw" style="background:var(--s1)"></i>Commit day · last push</span>
+        <span class="k"><i class="sw round" style="background:var(--s1)"></i>Claude session</span>
+        <span class="k"><i class="sw ln" style="background:var(--yellow);height:3px"></i>Today</span>
+      </div>
+      <div class="viz" id="timeline"></div>
+      <div class="tbl tscroll" id="timeline-table" hidden></div>
+      <p class="insight" id="timeline-insight"></p>
+    </article>
+  </section>
+
+  <section aria-labelledby="h-site">
+    <div class="sec-head">
+      <h2 id="h-site">raisable.vc in detail</h2>
+      <p>The one project with a readable history: 45 commits across 12 working days, from the first test deployment on 8 July to the tee QR link on 3 October.</p>
+    </div>
+    <div class="row3">
+      <article class="chart">
+        <div class="head">
+          <div><h3>Commits per week</h3><p class="cap">Thirteen weeks, Monday start, Pacific time.</p></div>
+          <button type="button" class="tbtn" aria-pressed="false" data-toggle="weekly">Table</button>
+        </div>
+        <div class="viz pre" id="weekly" role="img" aria-label="Column chart of commits per week"></div>
+        <div class="tbl tscroll" id="weekly-table" hidden></div>
+        <p class="insight" id="weekly-insight"></p>
+      </article>
+      <article class="chart">
+        <div class="head">
+          <div><h3>Commit hour of day</h3><p class="cap">All 45 commits by the hour they were authored, Pacific time.</p></div>
+          <button type="button" class="tbtn" aria-pressed="false" data-toggle="hours">Table</button>
+        </div>
+        <div class="legend">
+          <span class="k"><i class="sw" style="background:var(--s1)"></i>9 pm to 1 am</span>
+          <span class="k"><i class="sw" style="background:var(--quiet)"></i>Other hours</span>
+        </div>
+        <div class="viz pre" id="hours" role="img" aria-label="Column chart of commits by hour of day"></div>
+        <div class="tbl tscroll" id="hours-table" hidden></div>
+        <p class="insight" id="hours-insight"></p>
+      </article>
+      <article class="chart">
+        <div class="head">
+          <div><h3>What the site is made of</h3><p class="cap">Lines of code by language, then by page.</p></div>
+          <button type="button" class="tbtn" aria-pressed="false" data-toggle="comp">Table</button>
+        </div>
+        <div class="viz" id="comp"></div>
+        <div class="tbl tscroll" id="comp-table" hidden></div>
+        <p class="insight" id="comp-insight"></p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-tokens">
+    <div class="sec-head">
+      <h2 id="h-tokens">Token usage</h2>
+      <p>Counted, never estimated. Where a project shows <span class="unavail" style="cursor:default">Unavailable</span>, no source in reach reports a number for it.</p>
+    </div>
+    <div class="row2">
+      <article class="chart">
+        <div class="head"><div><h3>Coverage</h3><p class="cap">Projects with a verified token count.</p></div></div>
+        <div class="cov">
+          <div class="big" id="cov-big"></div>
+          <div class="meter" aria-hidden="true"><i id="cov-meter"></i></div>
+          <ul class="why">
+            <li><b>Past sessions report zero.</b> Claude Code's session history exposes a usage block per turn, but for all eight earlier sessions it comes back as 0 input, 0 output and $0.00. That is missing data, not free work, so it is shown as unavailable.</li>
+            <li><b>Repositories carry no usage.</b> GitHub knows pushes, not tokens. Five of the six repos have no session attached to them in this account's history.</li>
+            <li><b>Only this session is countable.</b> Its local transcript records every API call, so its tokens are attributed to the raisable.vc repository and stamped with the build time.</li>
+            <li><b>Context fill is not consumption.</b> The robotics session reports how full its context window is right now. That figure is shown on its card, clearly labelled, and kept out of the totals.</li>
+          </ul>
+        </div>
+      </article>
+      <article class="chart">
+        <div class="head">
+          <div><h3>This session, by token type</h3><p class="cap">The dashboard build itself, attributed to raisable.vc.</p></div>
+          <button type="button" class="tbtn" aria-pressed="false" data-toggle="tok">Table</button>
+        </div>
+        <div class="tok-hero"><span class="n" id="tok-total"></span><span class="d" id="tok-stamp"></span></div>
+        <div class="viz" id="tok"></div>
+        <div class="tbl tscroll" id="tok-table" hidden></div>
+        <p class="insight" id="tok-insight"></p>
+      </article>
+    </div>
+    <article class="chart">
+      <div class="head"><div><h3>Tokens by project</h3><p class="cap">Every project, its data source, and the number where one exists.</p></div></div>
+      <div class="tscroll" id="tok-by-project"></div>
+    </article>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Sources: GitHub repository list for VasylDub (6 repositories), Claude Code session history (9 sessions), the git log of raisable-site-test (45 commits), and this session's local transcript. Private repositories were listed, not read.</p>
+    <p id="built"></p>
+  </div>
+</footer>
+
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(function () {
+  'use strict';
+  document.documentElement.setAttribute('data-anim', '');
+  const BUILD = { at: '2026-10-04T07:08:00Z', today: '2026-10-04' };
+  const TODAY = new Date(BUILD.at);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Session tokens (from this session's local transcript; updated at build time) ---------- */
+  const THIS_SESSION_TOKENS = { input: 1488, cache_write: 749583, cache_read: 6714300, output: 295069 };
+
+  /* ---------- Projects ---------- */
+  const PROJECTS = [
+    { id: 'site', kind: 'repo', name: 'raisable.vc site', sub: 'VasylDub/raisable-site-test', vis: 'public',
+      first: '2026-07-09T04:13:11Z', last: '2026-10-04T00:43:34Z',
+      desc: 'The live site. One repo carries the gateway home, Raisable Global, Raisable Robotics, the SV ROI Track landing and the /T tee QR link.',
+      facts: [['Last push', 'today'], ['Commits', '45 since 8 Jul'], ['Code', '14.9K lines'], ['Media', '136 images · 4 videos']],
+      links: [['GitHub', 'https://github.com/VasylDub/raisable-site-test'], ['raisable.vc', 'https://raisable.vc']],
+      tokens: { kind: 'partial', value: null, note: 'this session only' } },
+    { id: 'rules', kind: 'repo', name: 'raisable-agent-rules', sub: 'VasylDub/raisable-agent-rules', vis: 'private',
+      last: '2026-09-30T21:26:52Z',
+      desc: 'Private repository. Its contents were not read for this dashboard; the name points to rules for the agents that work on Raisable.',
+      links: [['GitHub', 'https://github.com/VasylDub/raisable-agent-rules']], tokens: { kind: 'none', reason: 'No Claude session in this account is attached to the repo, and GitHub records pushes, not tokens.' } },
+    { id: 'roi', kind: 'repo', name: 'roi-track-oct26-k7', sub: 'VasylDub/roi-track-oct26-k7', vis: 'private',
+      last: '2026-08-17T00:28:03Z',
+      desc: 'Private. Pushed within hours of the SV ROI Track landing going live on raisable.vc, so it most likely backs that October 2026 cohort.',
+      links: [['GitHub', 'https://github.com/VasylDub/roi-track-oct26-k7']], tokens: { kind: 'none', reason: 'No Claude session in this account is attached to the repo.' } },
+    { id: 'accel', kind: 'repo', name: 'raisable-accelerator', sub: 'VasylDub/raisable-accelerator', vis: 'public',
+      last: '2026-07-13T02:47:30Z',
+      desc: 'Public. Last pushed on 13 July, a few days after the raisable.vc test deployment went up.',
+      links: [['GitHub', 'https://github.com/VasylDub/raisable-accelerator']], tokens: { kind: 'none', reason: 'No Claude session in this account is attached to the repo.' } },
+    { id: 'web', kind: 'repo', name: 'raisable-website', sub: 'VasylDub/raisable-website', vis: 'public',
+      last: '2026-07-09T07:46:11Z',
+      desc: 'Public. Last pushed on 9 July. raisable-site-test now holds the raisable.vc domain, so this reads as the earlier site.',
+      links: [['GitHub', 'https://github.com/VasylDub/raisable-website']], tokens: { kind: 'none', reason: 'No Claude session in this account is attached to the repo.' } },
+    { id: 'designs', kind: 'repo', name: 'designs', sub: 'VasylDub/designs', vis: 'public',
+      last: '2026-04-24T01:34:44Z',
+      desc: 'Public. Untouched since 24 April, the oldest item on the bench.',
+      links: [['GitHub', 'https://github.com/VasylDub/designs']], tokens: { kind: 'none', reason: 'No Claude session in this account is attached to the repo.' } },
+    { id: 'robotics', kind: 'session', name: 'Robotics events platform & founder pipeline', sub: 'Claude Code · Opus 5.5 · max effort · on your Mac',
+      first: '2026-10-04T01:07:09Z', last: '2026-10-04T06:42:21Z', blocked: true,
+      desc: 'Running through Remote Control on your Mac. Two event-cover designs are ready.',
+      note: 'Waiting on you: put the bridge photo and Ryan’s original photo in robotics-site/event-kit/photos/, or resend them. Then it refines the cutouts, composites the Golden Gate, flips the orientation and removes the old logo.',
+      facts: [['Started', '4 Oct, 01:07 UTC'], ['Last turn', '4 Oct, 06:42 UTC'], ['Turns, last 3 runs', '9 · 7 · 15']],
+      ctx: { used: 569535, max: 1000000 },
+      links: [['Spec & GTM playbook (artifact)', 'https://claude.ai/artifact/8KGeziCb8DLu5wEHbNfecU']],
+      tokens: { kind: 'none', reason: 'The session API returns 0 input and 0 output tokens for every turn of this session. Its context-window fill is known and shown above, but that is not consumption.' } },
+    { id: 'physai', kind: 'session', name: 'Physical AI program at Menlo Park', sub: 'Claude Code · Fable 5.1 · xhigh effort',
+      first: '2026-09-10T18:01:31Z', last: '2026-09-10T18:19:43Z',
+      desc: 'A single 18-minute session on 10 September that ran 58 turns and was archived the same day.',
+      facts: [['Date', '10 Sep 2026'], ['Duration', '18 min'], ['Turns', '58']],
+      tokens: { kind: 'none', reason: 'The session API returns zeroed usage for this archived session.' } },
+    { id: 'stanford', kind: 'session', name: 'Stanford Sustainability Hackathon sponsor leads', sub: 'Claude Code · Fable 5 · xhigh effort',
+      first: '2026-09-03T01:00:39Z', last: '2026-09-03T22:45:44Z',
+      desc: 'Ran through 3 September, about 22 hours from first message to last, then archived.',
+      facts: [['Date', '3 Sep 2026'], ['Span', '22 h']],
+      tokens: { kind: 'none', reason: 'The session API returns zeroed usage for this archived session.' } },
+    { id: 'crm', kind: 'session', name: 'Raisable CRM database enrichment', sub: 'Claude Code · Opus 5',
+      first: '2026-08-02T19:57:52Z', last: '2026-08-03T05:41:30Z',
+      desc: 'An overnight run on 2 to 3 August, about 10 hours end to end, then archived.',
+      facts: [['Date', '2–3 Aug 2026'], ['Span', '10 h']],
+      tokens: { kind: 'none', reason: 'The session API returns zeroed usage for this archived session.' } }
+  ];
+
+  /* Sessions that are not projects of their own but belong on the timeline */
+  const OTHER_SESSIONS = [
+    { name: 'Continue from usage limit', first: '2026-09-11T06:03:06Z', last: '2026-09-14T04:17:09Z', detail: 'Continuation after a usage-limit stop · 104 turns in its longest run · Fable 5.1' },
+    { name: 'Remote Control REPL', first: '2026-08-02T19:48:51Z', last: '2026-08-02T19:48:51Z', detail: 'macbook-air-local-velvet-robin · opened on raisable-site-test' },
+    { name: 'Remote Control REPL', first: '2026-08-16T23:24:45Z', last: '2026-08-16T23:24:46Z', detail: 'macbook-air-local-spicy-scroll' },
+    { name: 'Remote Control REPL', first: '2026-08-17T00:18:47Z', last: '2026-08-17T00:18:47Z', detail: 'macbook-air-local-transient-moler' },
+    { name: 'This dashboard', first: '2026-10-04T06:51:04Z', last: BUILD.at, detail: 'The session that built this page · Fable 5.1' }
+  ];
+
+  /* ---------- raisable.vc commits: [date (PT), hour (PT), subject] ---------- */
+  const COMMITS = [
+    ['2026-07-08', 21, 'Raisable.vc main site — test deployment'],
+    ['2026-07-08', 21, 'Collapsible sections, fit fly-in, real LinkedIn links, photos, final QA'],
+    ['2026-07-08', 22, 'Fix booking calendar: button instead of non-embeddable Google iframe'],
+    ['2026-07-08', 23, 'Wire forms to ClickUp relay (Apps Script) — CRM + branded email + Sheet'],
+    ['2026-07-08', 23, 'Mobile tap-to-open profile panels, GA4 hooks, sharper Lidiya photo'],
+    ['2026-07-09', 0, 'Enable GA4, hi-res Lidiya photo (800px, cache-busted)'],
+    ['2026-07-09', 0, 'Fix company logos/badges missing in profile panels'],
+    ['2026-07-09', 0, 'Crunchbase feature (article link + featured-in logo)'],
+    ['2026-07-09', 0, 'Crunchbase featured-in: full color, +20% size, above Our Values'],
+    ['2026-07-09', 0, 'Add CNAME (raisable.vc) for custom-domain deploy'],
+    ['2026-07-09', 22, 'Footer LinkedIn -> company page; upgrade 4 low-res member photos'],
+    ['2026-07-09', 22, 'Fix Vasyl personal LinkedIn slug'],
+    ['2026-07-09', 23, 'Mobile: 2-up people grids + full-width info panel below card'],
+    ['2026-07-10', 14, 'Hi-res photos + mobile connected member card'],
+    ['2026-07-10', 15, 'Correct photos, remove A-FIT green bg, Apply right on mobile'],
+    ['2026-07-10', 15, 'Mobile: right-align all primary Apply CTAs'],
+    ['2026-07-10', 15, 'Mobile polish: full-width primary CTAs, comfortable tap targets'],
+    ['2026-07-10', 16, 'Legal pages, event cards rebuilt, slider dots, new Rooms photos'],
+    ['2026-07-10', 16, 'Collapse FAQ into teaser, up-chevrons replace Show-less'],
+    ['2026-07-10', 16, 'Events: Robotics dinner first, inset covers, centered text'],
+    ['2026-07-11', 11, "Rooms: add two 'Lunch with an investor' photos"],
+    ['2026-07-11', 17, 'Mosaic assembly for member cards: tiles flip open in a diagonal wave'],
+    ['2026-07-11', 17, 'Mosaic v2: card content assembles from flipping cube tiles'],
+    ['2026-07-11', 19, 'Mosaic v3: the entire window assembles'],
+    ['2026-07-11', 19, 'Mosaic: much finer square tiles, faster wave'],
+    ['2026-07-11', 20, 'Mosaic v4: smooth & premium — cached stage, calm condensing motion'],
+    ['2026-07-12', 0, 'Mosaic: 50% finer tiles, silkier wave; mobile card top-line melts on open'],
+    ['2026-07-12', 0, 'Mosaic v5: clone-free 3D cube engine — 30x lighter, faster, true 3D turn'],
+    ['2026-07-12', 16, 'Mosaic perf: composited content fade replaces mask wipe'],
+    ['2026-07-12', 18, 'Mobile: tapping the open member card closes it'],
+    ['2026-07-21', 15, 'Founder form: MRR bands to $500K+, referral name field, numbered GA funnel events'],
+    ['2026-07-21', 15, 'Success screen: social row — YouTube, LinkedIn, Luma logos'],
+    ['2026-07-31', 15, 'Investor form: check size, stages, top-3 industries, optional criteria'],
+    ['2026-07-31', 18, "All forms: 'How did you hear about Raisable' + referral name tracking"],
+    ['2026-07-31', 22, 'Confirmation email: final copy + Instagram in signature'],
+    ['2026-07-31', 22, 'Mentors: add Ruslan Okhrimovych (effie.ai, Raisable Alumni)'],
+    ['2026-07-31', 22, 'Mentors: move Ruslan to second-to-last position'],
+    ['2026-08-16', 22, 'Add SV ROI Track landing at /sv-roi-oct26/ (noindex, link-only)'],
+    ['2026-08-19', 13, 'ROI Track: full Tech Week coverage in itinerary, conference details band'],
+    ['2026-09-30', 13, 'Gateway home: raisable.vc → Raisable Global + Raisable Robotics'],
+    ['2026-09-30', 22, 'Gateway: Robotics first, door videos play on their own'],
+    ['2026-10-01', 19, 'Analytics: one GA4 loader per page, generate_lead key event, cleaner events'],
+    ['2026-10-01', 19, 'Analytics: door clicks are reported by the next page; event_campaign on robotics leads'],
+    ['2026-10-01', 19, 'Analytics: note that the GA4 key event is form_submit'],
+    ['2026-10-03', 17, 'Tee QR short link: /T forwards to the gateway with the tee campaign tags']
+  ];
+  const LANG = [['CSS', 8520], ['HTML', 4074], ['JavaScript', 2323]];
+  const PAGES = [['Raisable Global', 1479], ['Raisable Robotics', 1052], ['SV ROI Track', 593], ['Gateway home', 519], ['Privacy policy', 151], ['Terms of use', 137], ['Robotics /go', 132], ['/T short link', 11]];
+
+  /* ---------- Helpers ---------- */
+  const $ = (s, r) => (r || document).querySelector(s);
+  const h = (tag, attrs, ...kids) => {
+    const el = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      if (k === 'class') el.className = attrs[k];
+      else if (k === 'style') el.style.cssText = attrs[k];
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== null && attrs[k] !== undefined) el.setAttribute(k, attrs[k]);
+    }
+    for (const kid of kids.flat()) if (kid !== null && kid !== undefined && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    return el;
+  };
+  const NS = 'http://www.w3.org/2000/svg';
+  const s = (tag, attrs, ...kids) => {
+    const el = document.createElementNS(NS, tag);
+    if (attrs) for (const k in attrs) if (attrs[k] !== null && attrs[k] !== undefined) el.setAttribute(k, attrs[k]);
+    for (const kid of kids.flat()) if (kid !== null && kid !== undefined && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    return el;
+  };
+  const fmtFull = n => n.toLocaleString('en-US');
+  const fmtCompact = n => n >= 1e6 ? (n / 1e6).toFixed(n < 1e7 ? 2 : 1) + 'M' : n >= 1e3 ? (n / 1e3).toFixed(n < 1e4 ? 1 : 0) + 'K' : String(n);
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const fmtDate = d => { d = d instanceof Date ? d : new Date(d); return d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()]; };
+  const fmtDateY = d => fmtDate(d) + ' ' + (d instanceof Date ? d : new Date(d)).getUTCFullYear();
+  const daysAgo = iso => Math.floor((TODAY - new Date(iso)) / 864e5);
+  const rel = iso => { const d = daysAgo(iso); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago'; };
+  const statusOf = p => p.blocked ? 'blocked' : daysAgo(p.last) <= 14 ? 'active' : daysAgo(p.last) <= 60 ? 'recent' : 'quiet';
+  const STATUS_LABEL = { active: 'Active', blocked: 'Needs input', recent: 'Recent', quiet: 'Quiet' };
+  const pDate = str => { const [y, m, d] = str.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const tokensTotal = Object.values(THIS_SESSION_TOKENS).reduce((a, b) => a + b, 0);
+  PROJECTS[0].tokens.value = tokensTotal;
+
+  /* ---------- Tooltip ---------- */
+  const tip = $('#tip');
+  function showTip(title, lines, x, y) {
+    tip.textContent = '';
+    tip.append(h('b', null, title));
+    for (const l of lines) tip.append(h('span', null, l), h('br'));
+    tip.classList.add('show'); tip.setAttribute('aria-hidden', 'false');
+    moveTip(x, y);
+  }
+  function moveTip(x, y) {
+    const w = tip.offsetWidth, hh = tip.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+    let left = x + 14, top = y + 14;
+    if (left + w > vw - 8) left = x - w - 14;
+    if (top + hh > vh - 8) top = y - hh - 14;
+    tip.style.left = Math.max(8, left) + 'px'; tip.style.top = Math.max(8, top) + 'px';
+  }
+  function hideTip() { tip.classList.remove('show'); tip.setAttribute('aria-hidden', 'true'); }
+  function bindTip(el, getContent) {
+    el.addEventListener('pointerenter', e => { const c = getContent(); showTip(c[0], c[1], e.clientX, e.clientY); });
+    el.addEventListener('pointermove', e => moveTip(e.clientX, e.clientY));
+    el.addEventListener('pointerleave', hideTip);
+    el.addEventListener('focus', () => { const r = el.getBoundingClientRect(); const c = getContent(); showTip(c[0], c[1], r.left + r.width / 2, r.top); });
+    el.addEventListener('blur', hideTip);
+    if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+  }
+
+  /* ---------- Count-up ---------- */
+  function countUp(el, target, format, dur) {
+    if (reduce) { el.textContent = format(target); return; }
+    const t0 = performance.now(); dur = dur || 900;
+    const step = now => { const k = Math.min(1, (now - t0) / dur); el.textContent = format(Math.round(target * ease(k))); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- Weekly bins ---------- */
+  const WEEK0 = pDate('2026-07-06'), NWEEKS = 13;
+  const weekly = Array.from({ length: NWEEKS }, (_, i) => ({ start: WEEK0 + i * 7 * 864e5, n: 0 }));
+  const byDay = new Map();
+  const byHour = Array(24).fill(0);
+  for (const [d, hr, subj] of COMMITS) {
+    const t = pDate(d); const wi = Math.floor((t - WEEK0) / (7 * 864e5)); if (weekly[wi]) weekly[wi].n++;
+    if (!byDay.has(d)) byDay.set(d, []); byDay.get(d).push(subj); byHour[hr]++;
+  }
+
+  /* ---------- Sources ---------- */
+  (function sources() {
+    const dl = $('#sources');
+    for (const [k, v] of [['GitHub', '6 repositories'], ['Claude Code', '9 sessions'], ['git log', '45 commits'], ['As of', fmtDateY(BUILD.at) + ', ' + new Date(BUILD.at).toISOString().slice(11, 16) + ' UTC']]) dl.append(h('div', null, h('dt', null, k), h('dd', null, v)));
+  })();
+
+  /* ---------- KPI tiles ---------- */
+  (function kpis() {
+    const root = $('#kpis');
+    const active = PROJECTS.filter(p => daysAgo(p.last) <= 14);
+    const blocked = PROJECTS.filter(p => p.blocked).length;
+    const last7 = COMMITS.filter(c => pDate(c[0]) >= pDate('2026-09-28')).length;
+    const withTokens = PROJECTS.filter(p => p.tokens.kind !== 'none').length;
+
+    const t1 = h('div', { class: 'tile reveal', style: '--i:0' }, h('div', { class: 'label' }, 'Projects tracked'), h('div', { class: 'value', id: 'k1' }, '0'), h('div', { class: 'sub' }, h('b', null, '6'), ' repositories · ', h('b', null, '4'), ' Claude workstreams'));
+    const t2 = h('div', { class: 'tile reveal', style: '--i:1' }, h('div', { class: 'label' }, 'Active in the last 14 days'), h('div', { class: 'value', id: 'k2' }, '0'), h('div', { class: 'sub' }, h('b', null, String(blocked)), ' of them waiting on you'));
+    const sparkWrap = h('div', { class: 'spark' });
+    const t3 = h('div', { class: 'tile reveal', style: '--i:2' }, h('div', { class: 'label' }, 'Commits on raisable.vc'), h('div', { class: 'value', id: 'k3' }, '0'), h('div', { class: 'sub' }, h('b', null, String(last7)), ' in the last 7 days · weekly since 6 Jul'), sparkWrap);
+    const t4 = h('div', { class: 'tile reveal', style: '--i:3' }, h('div', { class: 'label' }, 'Projects with token data'), h('div', { class: 'value', id: 'k4' }, '0', h('small', null, 'of ' + PROJECTS.length)), h('div', { class: 'sub' }, 'Only this session reports usage'), h('div', { class: 'meter', 'aria-hidden': 'true' }, h('i', { style: '--w:' + (withTokens / PROJECTS.length * 100) + '%' })));
+    root.append(t1, t2, t3, t4);
+    countUp($('#k1'), PROJECTS.length, String); countUp($('#k2'), active.length, String); countUp($('#k3'), COMMITS.length, String, 1100);
+    const k4 = $('#k4'); const small = k4.querySelector('small'); countUp(k4.firstChild ? { set textContent(v) { k4.firstChild.textContent = v; } } : k4, withTokens, String);
+    // sparkline
+    const W = 220, H = 44, max = Math.max(...weekly.map(w => w.n));
+    const pts = weekly.map((w, i) => [i / (NWEEKS - 1) * W, H - 4 - (w.n / max) * (H - 10)]);
+    const line = 'M' + pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join('L');
+    const area = line + 'L' + W + ',' + H + 'L0,' + H + 'Z';
+    const svg = s('svg', { viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'none', 'aria-hidden': 'true' });
+    svg.append(s('path', { class: 'area', d: area }));
+    const lp = s('path', { class: 'line', d: line }); svg.append(lp);
+    const last = pts[pts.length - 1];
+    sparkWrap.append(svg, h('i', { class: 'spark-dot pop', style: 'left:100%;top:' + (last[1] / H * 100).toFixed(1) + '%' }));
+    requestAnimationFrame(() => { const len = lp.getTotalLength(); lp.style.setProperty('--len', len.toFixed(0)); });
+  })();
+
+  /* ---------- Status legend ---------- */
+  (function legend() {
+    const root = $('#status-legend');
+    for (const k of ['active', 'blocked', 'recent', 'quiet']) root.append(h('span', { class: 'pill ' + k }, STATUS_LABEL[k]));
+  })();
+
+  /* ---------- Cards ---------- */
+  let filter = 'all';
+  const visible = () => PROJECTS.filter(p => filter === 'all' || p.kind === filter);
+  const kindIcon = p => {
+    const svg = s('svg', { viewBox: '0 0 12 12', 'aria-hidden': 'true' });
+    if (p.kind === 'repo') svg.append(s('rect', { x: 1, y: 1, width: 10, height: 10, rx: 2, fill: 'none', stroke: 'currentColor', 'stroke-width': 1.5 }));
+    else svg.append(s('circle', { cx: 6, cy: 6, r: 5, fill: 'none', stroke: 'currentColor', 'stroke-width': 1.5 }));
+    return svg;
+  };
+  function tokenCell(p) {
+    const t = p.tokens;
+    if (t.kind === 'none') { const u = h('span', { class: 'unavail' }, 'Unavailable'); bindTip(u, () => ['Token usage unavailable', [t.reason]]); return u; }
+    const el = h('span', { class: 'tv' }, fmtCompact(t.value), h('small', null, t.note));
+    bindTip(el, () => [fmtFull(t.value) + ' tokens', ['Counted from this session’s transcript at build time.', 'Includes cached input; see the token section for the split.']]);
+    return el;
+  }
+  function card(p, i) {
+    const st = statusOf(p);
+    const facts = p.facts ? h('dl', { class: 'facts' }, p.facts.map(([k, v]) => h('div', null, h('dt', null, k), h('dd', null, v)))) : null;
+    const lastRow = !p.facts ? h('dl', { class: 'facts' }, h('div', null, h('dt', null, p.kind === 'repo' ? 'Last push' : 'Last turn'), h('dd', null, rel(p.last))), h('div', null, h('dt', null, 'Date'), h('dd', null, fmtDateY(p.last)))) : null;
+    const ctx = p.ctx ? h('div', { class: 'ctx' }, h('div', { class: 'row' }, h('span', null, 'Context window in use (not consumption)'), h('b', null, fmtCompact(p.ctx.used) + ' / ' + fmtCompact(p.ctx.max))), h('div', { class: 'meter' }, h('i', { style: '--w:' + (p.ctx.used / p.ctx.max * 100).toFixed(1) + '%' }))) : null;
+    return h('article', { class: 'card reveal', style: '--i:' + i, 'data-id': p.id },
+      h('div', { class: 'top' }, h('span', { class: 'chip' }, kindIcon(p), p.kind === 'repo' ? 'Repo · ' + p.vis : 'Claude session'), h('span', { class: 'pill ' + st }, STATUS_LABEL[st])),
+      h('div', null, h('h3', null, p.name), h('div', { class: 'sub' }, p.sub)),
+      h('p', null, p.desc),
+      p.note ? h('div', { class: 'note' }, p.note) : null,
+      facts, lastRow, ctx,
+      p.links ? h('div', { class: 'links' }, p.links.map(([t, u]) => h('a', { href: u, target: '_blank', rel: 'noopener' }, t))) : null,
+      h('div', { class: 'tokens' }, h('span', { class: 'tl' }, 'Tokens consumed'), tokenCell(p))
+    );
+  }
+  function renderCards() {
+    const root = $('#cards'); root.textContent = '';
+    let i = 0;
+    for (const [kind, label, cls] of [['repo', 'Repositories', 'grid repos'], ['session', 'Claude workstreams', 'grid sessions']]) {
+      if (filter !== 'all' && filter !== kind) continue;
+      const items = PROJECTS.filter(p => p.kind === kind);
+      const g = h('div', { class: cls });
+      items.forEach(p => g.append(card(p, i++)));
+      root.append(h('div', { class: 'group' }, h('div', { class: 'group-head reveal', style: '--i:' + i }, h('span', { class: 'chip' }, label + ' · ' + items.length)), g));
+    }
+  }
+
+  /* ---------- Timeline ---------- */
+  const T0 = pDate('2026-04-15'), T1 = pDate('2026-10-07');
+  const px = t => ((t - T0) / (T1 - T0) * 100);
+  function renderTimeline(animate) {
+    const root = $('#timeline'); root.textContent = '';
+    const wrap = h('div', { class: 'tl-wrap' + (animate ? ' pre' : '') });
+    const axisTrack = h('div', { class: 'track' });
+    const ticks = [['2026-04-15', '15 Apr', true], ['2026-05-01', 'May'], ['2026-06-01', 'Jun'], ['2026-07-01', 'Jul'], ['2026-08-01', 'Aug'], ['2026-09-01', 'Sep'], ['2026-10-01', 'Oct']];
+    for (const [d, l, first] of ticks) axisTrack.append(h('span', { class: 'tick' + (first ? ' first' : ''), style: 'left:' + px(pDate(d)).toFixed(2) + '%' }, l));
+    wrap.append(h('div', { class: 'tl-axis' }, h('div'), axisTrack));
+    const grid = h('div', { class: 'tl-grid' });
+    for (const [d] of ticks.slice(1)) grid.append(h('i', { style: 'left:' + px(pDate(d)).toFixed(2) + '%' }));
+    const todayX = px(TODAY.getTime());
+    grid.append(h('i', { class: 'today', style: 'left:' + todayX.toFixed(2) + '%' }));
+    wrap.append(grid);
+    const rows = visible().map(p => ({ name: p.name, kind: p.kind, p }));
+    if (filter !== 'repo') rows.push({ name: 'Other Claude sessions', kind: 'session', others: OTHER_SESSIONS });
+    let delay = 0;
+    const addMark = (track, cls, left, width, content, d) => {
+      const st = 'left:' + left.toFixed(2) + '%;' + (width ? 'width:' + width.toFixed(2) + '%;' : '') + (d ? '--d:' + d + 's;' : '');
+      const mk = h('span', { class: 'mk ' + cls, style: st });
+      track.append(mk);
+      if (content) { const hit = h('span', { class: 'mk hit', style: 'left:' + left.toFixed(2) + '%' }); bindTip(hit, content); track.append(hit); }
+      return mk;
+    };
+    for (const r of rows) {
+      const track = h('div', { class: 'track' });
+      if (r.p && r.p.kind === 'repo' && r.p.id === 'site') {
+        addMark(track, 'span', px(pDate('2026-07-08')), px(new Date(r.p.last).getTime()) - px(pDate('2026-07-08')), null);
+        for (const [d, subjects] of byDay) { delay += 0.03; addMark(track, 'sq', px(pDate(d)), 0, () => [fmtDateY(pDate(d)) + ' · ' + subjects.length + (subjects.length === 1 ? ' commit' : ' commits'), subjects.slice(0, 3).concat(subjects.length > 3 ? ['+ ' + (subjects.length - 3) + ' more'] : [])], delay.toFixed(2)); }
+      } else if (r.p && r.p.kind === 'repo') {
+        delay += 0.05; addMark(track, 'sq', px(new Date(r.p.last).getTime()), 0, () => ['Last push · ' + fmtDateY(r.p.last), [r.p.vis === 'private' ? 'Private repository; history not read.' : 'Public repository; history not read for this dashboard.']], delay.toFixed(2));
+      } else if (r.p) {
+        const a = new Date(r.p.first).getTime(), b = new Date(r.p.last).getTime();
+        addMark(track, 'span', px(a), Math.max(px(b) - px(a), 0.5), null);
+        delay += 0.05; addMark(track, 'dot', px(b), 0, () => [r.p.name, ['Started ' + fmtDateY(r.p.first), 'Last turn ' + fmtDateY(r.p.last), r.p.sub]], delay.toFixed(2));
+      } else {
+        for (const o of r.others) { const a = new Date(o.first).getTime(), b = new Date(o.last).getTime(); addMark(track, 'span', px(a), Math.max(px(b) - px(a), 0.5), null); delay += 0.04; addMark(track, 'dot', px(b), 0, () => [o.name, [fmtDateY(o.first) + (o.last !== o.first && fmtDateY(o.last) !== fmtDateY(o.first) ? ' to ' + fmtDateY(o.last) : ''), o.detail]], delay.toFixed(2)); }
+      }
+      wrap.append(h('div', { class: 'tl-row' }, h('div', { class: 'name', title: r.name }, h('i', { class: 'g' + (r.kind === 'session' ? ' round' : '') }), r.name), track));
+    }
+    root.append(wrap);
+    if (animate) requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.remove('pre')));
+    // table twin
+    const tbl = $('#timeline-table'); tbl.textContent = '';
+    const table = h('table', { class: 'data' }, h('thead', null, h('tr', null, h('th', null, 'Project'), h('th', null, 'Event'), h('th', null, 'When'))));
+    const tb = h('tbody');
+    for (const r of rows) {
+      if (r.p && r.p.id === 'site') for (const [d, subjects] of byDay) tb.append(h('tr', null, h('td', null, r.name), h('td', null, subjects.length + (subjects.length === 1 ? ' commit' : ' commits')), h('td', null, fmtDateY(pDate(d)))));
+      else if (r.p && r.p.kind === 'repo') tb.append(h('tr', null, h('td', null, r.name), h('td', null, 'Last push'), h('td', null, fmtDateY(r.p.last))));
+      else if (r.p) tb.append(h('tr', null, h('td', null, r.name), h('td', null, 'Claude session'), h('td', null, fmtDateY(r.p.first) + (fmtDateY(r.p.first) !== fmtDateY(r.p.last) ? ' to ' + fmtDateY(r.p.last) : ''))));
+      else for (const o of r.others) tb.append(h('tr', null, h('td', null, o.name), h('td', null, o.detail), h('td', null, fmtDateY(o.first) + (fmtDateY(o.first) !== fmtDateY(o.last) ? ' to ' + fmtDateY(o.last) : ''))));
+    }
+    table.append(tb); tbl.append(table);
+    $('#timeline-insight').textContent = '';
+    $('#timeline-insight').append(h('b', null, 'Two bursts. '), 'The site took shape in five days in July, went quiet for six weeks, and came back on 30 September with the gateway split. Every Claude session except the robotics one finished within a day of starting.');
+  }
+
+  /* ---------- Column chart builder ---------- */
+  function columns(root, data, opts) {
+    root.textContent = '';
+    const W = Math.max(260, root.clientWidth), H = 190, m = { l: 30, r: 10, t: 22, b: 26 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const max = opts.max, slot = iw / data.length, bw = Math.min(24, slot * 0.68);
+    const svg = s('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H });
+    const title = s('title', null, opts.title); svg.append(title);
+    for (const tv of opts.ticks) { const y = m.t + ih - tv / max * ih; svg.append(s('line', { class: tv === 0 ? 'baseline' : 'gridline', x1: m.l, x2: W - m.r, y1: y, y2: y })); svg.append(s('text', { x: m.l - 8, y: y + 4, 'text-anchor': 'end' }, tv)); }
+    data.forEach((d, i) => {
+      const x = m.l + i * slot + (slot - bw) / 2, hgt = d.v / max * ih, y = m.t + ih - hgt;
+      if (d.v > 0) {
+        const r = Math.min(4, hgt), p = 'M' + x + ',' + (m.t + ih) + 'V' + (y + r) + 'Q' + x + ',' + y + ' ' + (x + r) + ',' + y + 'H' + (x + bw - r) + 'Q' + (x + bw) + ',' + y + ' ' + (x + bw) + ',' + (y + r) + 'V' + (m.t + ih) + 'Z';
+        const bar = s('path', { class: 'bar' + (d.dim ? ' dim' : ''), d: p, style: '--i:' + i }); svg.append(bar);
+        if (d.label) svg.append(s('text', { class: 'lab', x: x + bw / 2, y: y - 6, 'text-anchor': 'middle' }, d.label));
+        const hit = s('rect', { class: 'hit', x: m.l + i * slot, y: m.t, width: slot, height: ih });
+        hit.addEventListener('pointerenter', () => bar.classList.add('hot')); hit.addEventListener('pointerleave', () => bar.classList.remove('hot'));
+        bindTip(hit, () => [d.tip[0], d.tip.slice(1)]); svg.append(hit);
+      }
+      if (d.tick) svg.append(s('text', { x: m.l + i * slot + slot / 2, y: H - 8, 'text-anchor': i === 0 ? 'start' : i === data.length - 1 ? 'end' : 'middle' }, d.tick));
+    });
+    root.append(svg);
+    if (root.classList.contains('pre')) requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('pre')));
+  }
+  function renderWeekly() {
+    const max = Math.max(...weekly.map(w => w.n));
+    const maxI = weekly.findIndex(w => w.n === max);
+    const data = weekly.map((w, i) => ({ v: w.n, label: i === maxI || i === NWEEKS - 1 ? String(w.n) : null, tick: i % 4 === 0 ? fmtDate(w.start) : null, tip: ['Week of ' + fmtDateY(w.start), w.n + (w.n === 1 ? ' commit' : ' commits')] }));
+    columns($('#weekly'), data, { max: 30, ticks: [0, 10, 20, 30], title: 'Commits per week on raisable.vc' });
+    const tbl = $('#weekly-table'); tbl.textContent = '';
+    tbl.append(h('table', { class: 'data' }, h('thead', null, h('tr', null, h('th', null, 'Week of'), h('th', { class: 'num' }, 'Commits'))), h('tbody', null, weekly.map(w => h('tr', null, h('td', null, fmtDateY(w.start)), h('td', { class: 'num' }, String(w.n)))))));
+    const ins = $('#weekly-insight'); ins.textContent = ''; ins.append(h('b', null, '30 of 45 commits '), 'landed in the first week. After that the site moved in short bursts: forms in late July, the ROI Track in mid-August, the gateway and analytics in the week just gone.');
+  }
+  function renderHours() {
+    const max = 8;
+    const data = byHour.map((v, hr) => ({ v, dim: !(hr >= 21 || hr === 0), label: v === max ? String(v) : null, tick: hr % 6 === 0 ? (hr === 0 ? '12 am' : hr === 12 ? '12 pm' : (hr % 12) + (hr < 12 ? ' am' : ' pm')) : hr === 23 ? '11 pm' : null, tip: [(hr % 12 || 12) + (hr < 12 ? ':00 am' : ':00 pm') + ' Pacific', v + (v === 1 ? ' commit' : ' commits')] }));
+    columns($('#hours'), data, { max, ticks: [0, 4, 8], title: 'Commits by hour of day' });
+    const tbl = $('#hours-table'); tbl.textContent = '';
+    tbl.append(h('table', { class: 'data' }, h('thead', null, h('tr', null, h('th', null, 'Hour (Pacific)'), h('th', { class: 'num' }, 'Commits'))), h('tbody', null, byHour.map((v, hr) => v ? h('tr', null, h('td', null, String(hr).padStart(2, '0') + ':00'), h('td', { class: 'num' }, String(v))) : null))));
+    const night = byHour[21] + byHour[22] + byHour[23] + byHour[0];
+    const ins = $('#hours-insight'); ins.textContent = ''; ins.append(h('b', null, night + ' of 45 commits '), 'were authored between 9 pm and 1 am Pacific, as many as the whole 3 pm to 8 pm block. Thursdays and Fridays carry 23 of them; no commit has landed on a Monday yet.');
+  }
+  function renderComp() {
+    const root = $('#comp'); root.textContent = '';
+    const total = LANG.reduce((a, l) => a + l[1], 0);
+    const stack = h('div', { class: 'stack pre', role: 'img', 'aria-label': 'Stacked bar of lines of code by language' });
+    const cols = ['var(--s1)', 'var(--s2)', 'var(--s3)'];
+    LANG.forEach(([n, v], i) => {
+      const pct = v / total * 100;
+      const seg = h('i', { style: 'flex:0 0 calc(' + pct.toFixed(2) + '% - 2px);background:' + cols[i] }, pct >= 25 ? h('span', null, n + ' ' + fmtCompact(v)) : null);
+      bindTip(seg, () => [fmtFull(v) + ' lines', [n + ' · ' + pct.toFixed(0) + '% of the code']]);
+      stack.append(seg);
+    });
+    const key = h('div', { class: 'swl' }, LANG.map(([n, v], i) => h('span', { class: 'k' }, h('i', { style: 'background:' + cols[i] }), n + ' · ' + fmtFull(v))));
+    const max = PAGES[0][1];
+    const hb = h('div', { class: 'hbars pre' }, PAGES.map(([n, v], i) => { const row = h('div', { class: 'hbar' }, h('span', { class: 'n', title: n }, n), h('span', { class: 't' }, h('i', { style: '--w:' + (v / max * 100).toFixed(1) + '%;--i:' + i })), h('span', { class: 'v' }, fmtFull(v))); bindTip(row.querySelector('.t'), () => [fmtFull(v) + ' lines', [n + ' · HTML page']]); return row; }));
+    root.append(h('div', { class: 'label', style: 'font-size:12px;color:var(--muted)' }, 'By language · ' + fmtFull(total) + ' lines'), stack, key, h('div', { style: 'font-size:12px;color:var(--muted);margin-top:6px' }, 'By page · lines of HTML'), hb);
+    requestAnimationFrame(() => requestAnimationFrame(() => { stack.classList.remove('pre'); hb.classList.remove('pre'); }));
+    const tbl = $('#comp-table'); tbl.textContent = '';
+    tbl.append(h('table', { class: 'data' }, h('thead', null, h('tr', null, h('th', null, 'Part'), h('th', { class: 'num' }, 'Lines'))), h('tbody', null, LANG.map(([n, v]) => h('tr', null, h('td', null, n + ' (all files)'), h('td', { class: 'num' }, fmtFull(v)))), PAGES.map(([n, v]) => h('tr', null, h('td', null, n + ' (page)'), h('td', { class: 'num' }, fmtFull(v)))))));
+    const ins = $('#comp-insight'); ins.textContent = ''; ins.append(h('b', null, 'Style-heavy by design. '), 'CSS outweighs HTML two to one, which fits a site whose signature is the mosaic cube engine and door videos. Media adds 136 images and 4 videos, about 19 MB.');
+  }
+
+  /* ---------- Tokens ---------- */
+  function renderTokens() {
+    const withTokens = PROJECTS.filter(p => p.tokens.kind !== 'none').length;
+    const big = $('#cov-big'); big.textContent = ''; big.append(String(withTokens), h('small', null, 'of ' + PROJECTS.length + ' projects'));
+    $('#cov-meter').style.setProperty('--w', (withTokens / PROJECTS.length * 100) + '%');
+    const T = THIS_SESSION_TOKENS;
+    countUp($('#tok-total'), tokensTotal, n => fmtCompact(n) + ' tokens', 1200);
+    $('#tok-stamp').textContent = 'as of ' + fmtDateY(BUILD.at) + ', ' + new Date(BUILD.at).toISOString().slice(11, 16) + ' UTC';
+    const parts = [['Cached input read', T.cache_read, 'var(--s1)'], ['Cached input written', T.cache_write, 'var(--s2)'], ['Output', T.output, 'var(--s3)']];
+    const root = $('#tok'); root.textContent = '';
+    const stack = h('div', { class: 'stack pre', role: 'img', 'aria-label': 'Stacked bar of this session’s tokens by type' });
+    for (const [n, v, c] of parts) { const pct = v / tokensTotal * 100; const seg = h('i', { style: 'flex:0 0 calc(' + pct.toFixed(2) + '% - 2px);background:' + c }, pct >= 25 ? h('span', null, n + ' ' + pct.toFixed(0) + '%') : null); bindTip(seg, () => [fmtFull(v) + ' tokens', [n + ' · ' + pct.toFixed(1) + '%']]); stack.append(seg); }
+    root.append(stack, h('div', { class: 'swl' }, parts.map(([n, v, c]) => h('span', { class: 'k' }, h('i', { style: 'background:' + c }), n + ' · ' + fmtCompact(v))), h('span', { class: 'k' }, 'Fresh input · ' + fmtFull(T.input) + ' (too small to draw)')));
+    requestAnimationFrame(() => requestAnimationFrame(() => stack.classList.remove('pre')));
+    const tbl = $('#tok-table'); tbl.textContent = '';
+    tbl.append(h('table', { class: 'data' }, h('thead', null, h('tr', null, h('th', null, 'Token type'), h('th', { class: 'num' }, 'Tokens'), h('th', { class: 'num' }, 'Share'))), h('tbody', null,
+      [['Cached input read', T.cache_read], ['Cached input written', T.cache_write], ['Output (incl. thinking)', T.output], ['Fresh input', T.input]].map(([n, v]) => h('tr', null, h('td', null, n), h('td', { class: 'num' }, fmtFull(v)), h('td', { class: 'num' }, (v / tokensTotal * 100).toFixed(2) + '%'))),
+      h('tr', null, h('td', null, h('b', null, 'Total')), h('td', { class: 'num' }, h('b', null, fmtFull(tokensTotal))), h('td', { class: 'num' }, '100%')))));
+    const ins = $('#tok-insight'); ins.textContent = ''; ins.append(h('b', null, (T.cache_read / tokensTotal * 100).toFixed(0) + '% cache reads. '), 'Most of the volume is the same conversation re-read from cache on each turn, which is billed at a fraction of fresh input. Output, including thinking, is ' + fmtCompact(T.output) + '.');
+    // by project
+    const bp = $('#tok-by-project'); bp.textContent = '';
+    bp.append(h('table', { class: 'data' }, h('thead', null, h('tr', null, h('th', null, 'Project'), h('th', null, 'Kind'), h('th', null, 'Source checked'), h('th', { class: 'num' }, 'Tokens'), h('th', null, 'Note'))), h('tbody', null, PROJECTS.map(p => {
+      const t = p.tokens;
+      const src = p.kind === 'repo' ? (p.id === 'site' ? 'This session’s transcript' : 'Session history (no attached session)') : 'Session history (usage zeroed)';
+      return h('tr', null, h('td', null, p.name), h('td', null, p.kind === 'repo' ? 'Repository' : 'Claude session'), h('td', null, src), h('td', { class: 'num' }, t.kind === 'none' ? h('span', { class: 'unavail' }, 'Unavailable') : fmtFull(t.value)), h('td', { style: 'color:var(--fg-soft)' }, t.kind === 'none' ? t.reason : 'This session only. Earlier sessions on this repo report no usage.'));
+    }))));
+  }
+
+  /* ---------- Table toggles ---------- */
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.tbtn'); if (!b) return;
+    const id = b.dataset.toggle, viz = $('#' + id), tbl = $('#' + id + '-table');
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Chart' : 'Table';
+    viz.hidden = on; tbl.hidden = !on;
+  });
+
+  /* ---------- Filter ---------- */
+  $('#seg').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b || b.dataset.kind === filter) return;
+    filter = b.dataset.kind;
+    for (const x of $('#seg').children) x.setAttribute('aria-pressed', String(x === b));
+    document.documentElement.classList.remove('in');
+    renderCards(); renderTimeline(true);
+    requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.add('in')));
+  });
+
+  /* ---------- Mosaic header (a nod to the site's tile engine) ---------- */
+  (function mosaic() {
+    const c = $('#mosaic'), ctx = c.getContext('2d'), hero = c.parentElement;
+    let w = 0, hh = 0, dpr = 1, raf = 0, t0 = performance.now(), last = 0;
+    const SIZE = 11, PITCH = 15;
+    function resize() { dpr = Math.min(2, window.devicePixelRatio || 1); w = hero.clientWidth; hh = hero.clientHeight; c.width = w * dpr; c.height = hh * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); draw(reduce ? 0 : (performance.now() - t0) / 1000); }
+    function noise(i, j) { const x = Math.sin(i * 12.9898 + j * 78.233) * 43758.5453; return x - Math.floor(x); }
+    function draw(t) {
+      ctx.clearRect(0, 0, w, hh);
+      const cols = Math.ceil(w / PITCH) + 1, rows = Math.ceil(hh / PITCH) + 1;
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+        const ph = (i + j) * 0.38 + noise(i, j) * 1.4;
+        const wave = 0.5 + 0.5 * Math.sin(t * 1.3 - ph);
+        const a = 0.05 + 0.2 * wave;
+        const fw = SIZE * (0.3 + 0.7 * Math.abs(Math.cos(t * 1.3 - ph)));
+        ctx.fillStyle = 'rgba(0,189,151,' + a.toFixed(3) + ')';
+        ctx.fillRect(i * PITCH + (SIZE - fw) / 2, j * PITCH, fw, SIZE);
+      }
+    }
+    function loop(now) { if (now - last > 40) { last = now; draw((now - t0) / 1000); } raf = requestAnimationFrame(loop); }
+    new ResizeObserver(resize).observe(hero); resize();
+    if (!reduce) { raf = requestAnimationFrame(loop); document.addEventListener('visibilitychange', () => { if (document.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(loop); }); }
+  })();
+
+  /* ---------- Boot ---------- */
+  renderCards(); renderTimeline(true); renderWeekly(); renderHours(); renderComp(); renderTokens();
+  $('#built').textContent = 'Built ' + fmtDateY(BUILD.at) + ' at ' + new Date(BUILD.at).toISOString().slice(11, 16) + ' UTC. Dates on this page are fixed to that moment; relative labels do not advance.';
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { renderWeekly(); renderHours(); }, 150); });
+  requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.add('in')));
+})();
+</script>
+</body>
+</html>
