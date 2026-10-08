@@ -61,7 +61,10 @@
   var EVENT_NAMES = {
     'sftw26-breakfast': 'SF Tech Week — Series A Founders & CVCs Breakfast (Oct 5)',
     'sftw26-pitchnight': 'SF Tech Week — VC <> Founders Pitch Night (Oct 8)',
-    'tee': 'Raisable team T-shirt'
+    'tee': 'Raisable team T-shirt',
+    'rollup': 'Raisable roll-up stand',
+    'tripod': 'Raisable tripod banner',
+    'table-sign': 'Raisable table sign'
   };
   var fromEvent = utm.utm_medium === 'qr' || utm.utm_source === 'event';
   var eventName = EVENT_NAMES[utm.utm_campaign] || (fromEvent ? (utm.utm_campaign || 'Raisable event') : '');
@@ -347,19 +350,9 @@
   /* ---------- Priority (per the spec) ---------- */
   function has(str, re) { return re.test(str || ''); }
   function computePriority(d) {
-    if (d.type === 'corporate') {
-      var format = has(d.partner_goal, /Co-hosting|roundtable|Founding partnership/);
-      var soon = has(d.timeline, /This quarter|H1 2027/);
-      var authority = has(d.decision_role, /decide|recommend/);
-      var score = (format ? 1 : 0) + (soon ? 1 : 0) + (authority ? 1 : 0);
-      return score === 3 ? 'hot' : (score === 2 ? 'warm' : 'nurture');
-    }
-    if (d.type === 'investor') {
-      var stageFit = has(d.stage_focus, /Seed|Series A/);
-      var digest = has(d.engagement, /digest/);
-      var institutional = !has(d.investor_type, /Angel/);
-      return stageFit && digest && institutional ? 'hot' : 'warm';
-    }
+    // Corporate teams and investors are answered first, so both are 'hot' (our own target: one business day;
+    // the site promises a reply, not a deadline — Oct 7, 2026). Mirrors computeRoboticsTags_ in the relay.
+    if (d.type === 'corporate' || d.type === 'investor') return 'hot';
     // founder
     var paid = has(d.deployment_stage, /Paid deployments/);
     var pilotOrPaid = paid || has(d.deployment_stage, /Pilot/);
@@ -442,20 +435,28 @@
       '<a href="https://luma.com/raisable" target="_blank" rel="noopener" aria-label="Raisable events on Luma"><img src="assets/img/LG_LUMA_ICON.png" alt="Luma"></a>' +
       '</div></div>';
   }
+  // "Thanks, Anna." The first name is the visitor's own input, so it is escaped.
+  function thanks(d) {
+    var first = String(d.name || '').trim().split(/\s+/)[0];
+    if (!first) return 'Thanks.';
+    return 'Thanks, <em>' + first.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    }) + '.</em>';
+  }
   function successHTML(d) {
     if (d.type === 'corporate') {
-      return '<h3 class="success-h">Thanks — <em>let’s scope it together.</em></h3>' +
-        '<div class="success-body"><p>We’ll reach out within one business day to set up a 30-minute call — and come to it with founders matched to your focus.</p></div>' +
+      return '<h3 class="success-h">' + thanks(d) + '</h3>' +
+        '<div class="success-body"><p>We’ll get back to you.</p></div>' +
         socialRow();
     }
     if (d.type === 'investor') {
-      return '<h3 class="success-h">Thanks — <em>let’s talk.</em></h3>' +
-        '<div class="success-body"><p>We’ll reach out to set up a 20-minute intro. You’ll also get our next founder digest.</p></div>' +
+      return '<h3 class="success-h">' + thanks(d) + '</h3>' +
+        '<div class="success-body"><p>We’ll get back to you.</p></div>' +
         socialRow();
     }
     if (d.priority === 'series_a_hot') {
       return '<h3 class="success-h">You’re exactly who <em>we’re building this for.</em></h3>' +
-        '<div class="success-body"><p>Your company looks like a strong fit for the 2027 Raisable Robotics Track. We’ll reach out within two business days to set up a call.</p></div>' +
+        '<div class="success-body"><p>Your company looks like a strong fit for the 2027 Raisable Robotics Track. We’ll reach out to set up a call.</p></div>' +
         socialRow();
     }
     var eventsOnly = /events/i.test(d.format_interest || '');
