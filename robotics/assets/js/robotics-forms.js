@@ -98,7 +98,7 @@
     showStep(step || 'who');
     if (!modal.open) modal.showModal();
     openedAt = Date.now();
-    if (step === 'founder' || step === 'investor' || step === 'corporate') track('form_open', { type: step });
+    if (step === 'founder' || step === 'investor' || step === 'corporate' || step === 'operator') track('form_open', { type: step });
   }
 
   function preselectProgram(value) {
@@ -140,9 +140,9 @@
     if (lastTrigger) { lastTrigger.focus(); lastTrigger = null; }
   });
 
-  // Deep links: #apply · #apply/founder · #apply/investor · #apply/corporate (alias: partner, cvc)
+  // Deep links: #apply · #apply/founder · #apply/investor · #apply/corporate (alias: partner, cvc) · #apply/operator
   function routeFromHash() {
-    var m = location.hash.match(/^#apply(?:\/(founder|investor|partner|corporate|cvc))?$/);
+    var m = location.hash.match(/^#apply(?:\/(founder|investor|partner|corporate|cvc|operator))?$/);
     if (!m) return;
     var map = { partner: 'corporate', cvc: 'corporate' };
     openModal(m[1] ? (map[m[1]] || m[1]) : 'who');
@@ -364,7 +364,7 @@
   /* Robotics answers duplicated into `notes`, so nothing is lost if the
      relay/sheet doesn't have the new columns yet. */
   var NOTE_FIELDS = {
-    corporate: ['team_type', 'focus_areas', 'decision_role', 'pilot_problem'],
+    corporate: ['form_variant', 'team_type', 'partner_goal', 'focus_areas', 'decision_role', 'pilot_problem'],
     investor: ['engagement'],
     founder: ['founder_role', 'deployment_stage', 'raised_to_date', 'demo_url', 'success_6m']
   };
@@ -401,6 +401,8 @@
       data[k] = Array.isArray(multi[k]) ? multi[k].join('; ') : multi[k];
     });
     if (data.heard_from && fromEvent && eventName) data.heard_from = 'Event / Conference: ' + eventName;
+    // operators and partners (Oct 8): the relay already handles corporate leads (card, partner email, SLA)
+    if (data.type === 'operator') { data.type = 'corporate'; data.form_variant = 'operator-partner'; }
     data.priority = computePriority(data);
     data.notes = notesSummary(data);
     return data;
